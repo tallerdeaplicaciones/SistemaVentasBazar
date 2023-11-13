@@ -16,10 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from registration.decorators import redirect_home_based_on_credentials
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),    
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/', include('registration.urls')),
 ]

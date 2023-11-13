@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'core',
     'jefeVentas',
     'vendedor',
-    'registration',
 ]
 # LOGOUT_REDIRECT_URL = 'home'
 
