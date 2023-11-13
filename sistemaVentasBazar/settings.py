@@ -9,18 +9,18 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
-
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+load_dotenv()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ra@d*plebo!_k^*y#ckja(17jfk2k8hy-+1xq@!@-!pzjk)0k*'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -79,15 +79,14 @@ WSGI_APPLICATION = 'sistemaVentasBazar.wsgi.application'
 
 DATABASES = {
     'default':{
-        'ENGINE' :'django.db.backends.postgresql_psycopg2',
-        'NAME' : 'sistemaVentasBazar',
-        'USER' : 'postgres',
-        'PASSWORD' : 'Hola.123',
-        'HOST' : 'instance-database1.c8ocf36xbpvq.us-east-1.rds.amazonaws.com',
-        'PORT' : '5432'
+        'ENGINE' : os.getenv('DB_ENGINE'),
+        'NAME' : os.getenv('DB_DATABASE'),
+        'USER' : os.getenv('DB_USER'),
+        'PASSWORD' : os.getenv('DB_PASSWORD'),
+        'HOST' : os.getenv('DB_HOST'),
+        'PORT' : os.getenv('DB_PORT')
     }
 }
-
 
 
 # Password validation
