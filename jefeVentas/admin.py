@@ -6,3 +6,4 @@ from .models import Categoria, Productos
 admin.site.register(Categoria)
 
 admin.site.register(Productos)
+
