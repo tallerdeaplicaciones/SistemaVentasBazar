@@ -1,0 +1,25 @@
+{% extends 'registration/base.html' %}
+
+{% block content %}
+
+<h2>Iniciar sesion</h2>
+<div class="colmd-6">
+    <form method="post">
+        {% csrf_token %}
+        <p>
+            <label>Usrname</label>
+            <input type="text" name="username" class="form-control" required>
+        </p>
+        <p>
+            <label>Password</label>
+            <input type="text" name="password" class="form-control" required>
+        </p>
+        {% if form.non_field_errors %}
+        <p class="text-danger">Usuario y/o contraseñas incorrectos, intente nuevamente</p>
+        {% endif %}
+        <p><a style="text-decoration: none" href="{% url 'signup' %}">Cree una cuenta aqui</a></p>
+        <input type="submit" class="btn btn-success" value="Login">
+        <a href="" class="btn btn-dark">Back</a>
+    </form>
+</div>
+{% endblock %}

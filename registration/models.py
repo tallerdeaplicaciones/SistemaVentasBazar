@@ -13,6 +13,7 @@ class Persona(AbstractUser):
     
     def __str__(self) -> str:
         return f'{self.nombre} {self.apellido}'
-
-
+# related_name campos sin conflictos, nombres unicos para cada campo
+Persona.groups.field.remote_field.related_name = 'persona_groups'
+Persona.user_permissions.field.remote_field.related_name = 'persona_user_permissions'
 
