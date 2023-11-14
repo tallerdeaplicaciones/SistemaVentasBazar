@@ -6,7 +6,6 @@
     <form id="signup-form" method="post">
         {% csrf_token %}
         {{form.as_p}}
-        {{ persona_form.as_p }}
         <p>
             <input type="submit" class="btn btn-success" value="Create">
             <a href="{% url 'login' %}" class="btn btn-dark">Back</a>
