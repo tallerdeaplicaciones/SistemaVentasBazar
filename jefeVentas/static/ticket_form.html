@@ -1,0 +1,16 @@
+{% extends 'tickets/base.html' %}
+
+{% block content %}
+
+<h2>Formulario creacion Tickets</h2>
+
+<form action="" method="post" class="col-7 mx-auto">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="is-grouped mt-5">
+        <button class="btn btn-success">Create</button>
+        <a class="btn btn-dark" href="{% url 'ticket_list' %}">Back to home</a>
+    </div>
+</form>
+
+{% endblock %}
