@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -22,7 +23,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#inicio">Inicio</a>
+                    <a class="nav-link" href="{% url 'pagina_principal' %}">Inicio</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#informe-ventas">Informe de Ventas</a>
@@ -31,7 +32,7 @@
                     <a class="nav-link" href="#informe-tributario">Informe Tributario</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#inventario">Inventario</a>
+                    <a class="nav-link" href="{% url 'pagina_inventario' %}">Inventario</a>
                 </li>
             </ul>
         </div>
@@ -41,5 +42,9 @@
         {% block content %}
         {% endblock %}
     </div>
+    <footer style="background-color: #f0f0f0; padding: 20px; text-align: center;">
+        <p>&copy; 2023 Monitos de la Nona - Todos los derechos reservados</p>
+        <!-- Agrega enlaces o información adicional sobre tu página web -->
+    </footer>
 </body>
 </html>
