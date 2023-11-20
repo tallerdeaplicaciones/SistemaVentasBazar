@@ -1,16 +1,10 @@
-from typing import Any
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.forms import UserChangeForm
-from django.contrib.auth.views import LoginView
-from django.db import models
-from django.urls import reverse_lazy
+from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView
-from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from vendedor.models import Vendedor
+from vendedor.forms import VendedorForm
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from vendedor.forms import VendedorForm
-from vendedor.models import Vendedor
 
 class SignUpView(CreateView):
     form_class = UserCreationForm
@@ -28,7 +22,6 @@ class SignUpView(CreateView):
 
         return form
     
-
 class ProfileUpdate(UpdateView):
     form_class = VendedorForm
     success_url = reverse_lazy('profile')

@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'vendedor',
     'registration',
 ]
+
+LOGIN_REDIRECT_URL = 'vendedor'
 # LOGOUT_REDIRECT_URL = 'home'
 
 MIDDLEWARE = [
