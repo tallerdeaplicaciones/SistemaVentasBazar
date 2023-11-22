@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'vendedor',
     'registration',
 ]
+
+LOGIN_REDIRECT_URL = 'vendedor'
 # LOGOUT_REDIRECT_URL = 'home'
 
 MIDDLEWARE = [
@@ -112,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
