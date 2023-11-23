@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from vendedor.models import Vendedor
 from vendedor.forms import VendedorForm
@@ -16,7 +16,9 @@ class CustomLoginView(LoginView):
         response = super().form_valid(form)
         # Lógica de redirección basada en grupos
         return grupo_usuario(self.request)
-    
+
+# esta funcion nos ayuda a identificar el grupo al 
+# cual pertenece el usuario y hacia donde redirigirlo  
 def grupo_usuario(request):
     if request.user.groups.filter(name='jefeVentas').exists():
         # Usuario pertenece al grupo 'jefedeventas'
@@ -27,6 +29,14 @@ def grupo_usuario(request):
     else:
         # Usuario no pertenece a ninguno de los grupos, manejar según tus necesidades
         return render(request, 'registration/error_usuario.html')
+    
+# incorporamos logout personalizado para 
+# volver a la vista de login cuando hacemos logout   
+class CustomLogoutView(LogoutView):
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        return redirect('login')
+
 
 class SignUpView(CreateView):
     form_class = UserCreationForm
