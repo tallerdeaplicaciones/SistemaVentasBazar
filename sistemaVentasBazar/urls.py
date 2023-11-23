@@ -16,14 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth.views import LoginView
+# from django.contrib.auth.views import LoginView
+from registration.views import CustomLoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', LoginView.as_view(), name='login'),
-    # path('accounts/', include('django.contrib.auth.urls')),
+    path('', CustomLoginView.as_view(), name='login'),
+    
+    path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('registration.urls')),  
     path('vendedor/', include('vendedor.urls')),
+    path('jefeVentas/', include('jefeVentas.urls')),
 ]
 # if settings.DEBUG:
 #     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

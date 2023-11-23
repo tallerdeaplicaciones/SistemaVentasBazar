@@ -43,8 +43,7 @@ INSTALLED_APPS = [
     'registration',
 ]
 
-LOGIN_REDIRECT_URL = 'vendedor'
-# LOGOUT_REDIRECT_URL = 'home'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,7 +56,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'sistemaVentasBazar.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -135,3 +133,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# LOGIN_REDIRECT_URL = 'vendedor'
+LOGOUT_REDIRECT_URL = 'login'
