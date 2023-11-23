@@ -18,8 +18,12 @@
             
             <div class="col-md-4">
                 <div class="d-flex align-items-center">
-                    <img src="#" alt="Foto de perfil" class="rounded-circle me-2">
-                    <span class="fw-bold">Fredy Malca</span>
+                    <i class="bi bi-person-circle"></i>
+                    {% if user.is_authenticated %}
+                        <!-- Tu código para mostrar el nombre del usuario -->
+                        <span class="fw-bold"> {{ user.get_full_name }}</span>
+                    {% endif %}
+
                 </div>
             </div>
         </div>
