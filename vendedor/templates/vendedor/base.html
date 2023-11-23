@@ -21,6 +21,15 @@
     <title>Panel de ventas</title>
 </head>
 <body>
+    <div class="d-flex justify-content-end p-3" role="search">
+
+        {% if request.user.is_authenticated %}
+        <!-- <a class="nav-link me-2" href="{% url 'profile' %}"><i class="bi bi-person"></i>Profile: {{tech.user.username}}</a> -->
+        <a class="nav-link " href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i>Logout</a>
+        {% else %}
+        <a class="nav-link me-2" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i>Login</a>
+        {% endif %}
+    </div>
     <div>
         <!--Contenido dinamico-->
         {% block content %}

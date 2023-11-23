@@ -1,10 +1,32 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from vendedor.models import Vendedor
 from vendedor.forms import VendedorForm
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+
+#aqui estamos manejando el inicio de sesion y como 
+# son direccionados los dos tipos de usuarios + un mensaje de error en caso de
+# que el usuario no sea ni vendedor ni jefe
+
+class CustomLoginView(LoginView):
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Lógica de redirección basada en grupos
+        return grupo_usuario(self.request)
+    
+def grupo_usuario(request):
+    if request.user.groups.filter(name='jefeVentas').exists():
+        # Usuario pertenece al grupo 'jefedeventas'
+        return redirect('pagina_principal')
+    elif request.user.groups.filter(name='vendedores').exists():
+        # Usuario pertenece al grupo 'vendedor'
+        return redirect('vendedor')
+    else:
+        # Usuario no pertenece a ninguno de los grupos, manejar según tus necesidades
+        return render(request, 'registration/error_usuario.html')
 
 class SignUpView(CreateView):
     form_class = UserCreationForm
@@ -30,3 +52,6 @@ class ProfileUpdate(UpdateView):
     def get_object(self):
         profile, create = Vendedor.objects.get_or_create(user = self.request.user)
         return profile
+
+
+
