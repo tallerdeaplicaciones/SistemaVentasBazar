@@ -15,7 +15,7 @@
     <title>JefeVentas</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
         <a class="navbar-brand" href="#">Sistema de Ventas</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -34,10 +34,24 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'pagina_inventario' %}">Inventario</a>
                 </li>
+                {% if caja_abierta %}
+                {% for caja in cajas %}
+                    {% if caja.estado.nombre == 'Abierto' %}
+                        <li class="nav-item">
+                            <a class="btn btn-outline-danger" href="{% url 'cerrar_caja' caja.pk %}">Cerrar Caja</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <!-- Mostrar el botón para abrir la caja si no hay ninguna abierta -->
+                <li class="nav-item">
+                    <a class="btn btn-outline-primary" href="{% url 'crear_caja' %}">Abrir Caja</a>
+                </li>
+            {% endif %}
             </ul>
         </div>
     </nav>
-    <div class="container">
+    <div class="container mb-5">
         <!--Contenido dinamico-->
         {% block content %}
         {% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'jefeVentas/base.html' %}
+
+
+{% block content %}
+
+<h2>¿Está seguro de cerrar la caja?</h2>
+<form method="post" class="col-7 mx-auto">
+    {% csrf_token %}
+    {{ form.as_p}}
+    <button class="btn btn-danger"  type="submit" >Cerrar </button>
+    <a href="{% url 'pagina_principal' %}" class="btn btn-secondary">Volver</a>
+</form>
+
+{% endblock %}

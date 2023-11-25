@@ -1,0 +1,13 @@
+{% extends 'jefeVentas/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Confirmar eliminacion</h2>
+    <p>¿Está seguro de que quiere eliminar el producto {{ i.nombre }} ?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confimar eliminacion</button>
+        <a href="{% url 'pagina_principal' %}" class="btn btn-secondary">Volver</a>
+    </form>
+</div>
+{% endblock %}

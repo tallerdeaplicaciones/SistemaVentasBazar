@@ -1,0 +1,14 @@
+{% extends 'jefeVentas/base.html' %}
+{% load static %}
+{% block content %}
+
+<h2>Crear Caja</h2>
+<h5>Ingrese el monto inicial para abrir la  <strong>Caja</strong></h5>
+<form method="post" class="col-7 mx-auto">
+    {% csrf_token %}
+    {{ form.as_p}}
+    <button class="btn btn-success"  type="submit" >Abrir </button>
+    <a href="{% url 'pagina_principal' %}" class="btn btn-secondary">Volver</a>
+</form>
+
+{% endblock %}

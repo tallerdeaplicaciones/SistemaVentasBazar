@@ -1,5 +1,5 @@
-{% extends 'jefeVentasT/base.html' %}
-
+{% extends 'jefeVentas/base.html' %}
+{% load static %}
 {% block content %}
 
 <h2>Lista de Productos</h2>
@@ -24,7 +24,11 @@
         {% for i in productos %}
         <tr>
             <td>{{ i.id }}</td>
-            <td><img src="{{ i.imagen }}" alt="Foto de producto {{i.nombre}}" width="50px"></td>
+            {% if i.imagen %}
+            <td><img src="{{ i.imagen.url }}" alt="Foto de producto {{i.nombre}}" width="50px"></td>
+            {% else %}
+            <td><img src="{% static 'img/default_imagen.png' %}" alt="Foto de producto {{i.nombre}}" width="50px"></td>
+            {% endif %}
             <td>{{ i.nombre }}</td>
             <td>{{ i.precio }}</td>
             <td>{{ i.descripcion }}</td>
