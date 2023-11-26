@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
-from .models import Productos, Caja, Estado
+from vendedor.models import Producto, Caja, Estado
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
 
@@ -22,27 +22,27 @@ class Pagina_principal(TemplateView):
 
 
 class Pagina_inventario(ListView):
-    model = Productos
+    model = Producto
     template_name = "jefeVentas/inventario/inventario.html"
     context_object_name= 'productos'
 
 
 class ProductoCreateView(CreateView):
-    model= Productos
+    model= Producto
     form_class =ProductoForm
     template_name='jefeventas/inventario/formulario.html'
     success_url = reverse_lazy('pagina_inventario')
 
 
 class ProductoUpdateView(UpdateView):
-    model = Productos
+    model = Producto
     form_class = ProductoForm
     template_name = 'jefeVentas/inventario/edit_form.html'
     success_url = reverse_lazy('pagina_inventario')
 
 
 class ProductoDeleteView(DeleteView):
-    model = Productos
+    model = Producto
     template_name = 'jefeVentas/inventario/delete.html'
     success_url = reverse_lazy('pagina_inventario')
 

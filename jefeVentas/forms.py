@@ -1,9 +1,10 @@
 from django import forms
-from .models import Productos, Caja
+from vendedor.models import Producto, Caja, Categoria
+
 
 class ProductoForm(forms.ModelForm):
     class Meta:
-        model = Productos
+        model = Producto
         fields = ['nombre','precio', 'descripcion', 'stock','imagen','categoria']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
@@ -11,8 +12,13 @@ class ProductoForm(forms.ModelForm):
             'description' : forms.TextInput(attrs={'class' : 'form-control'}),
             'stock' : forms.TextInput(attrs={'class' : 'form-control'}),
             'imagen' : forms.ClearableFileInput(attrs={'class' : 'form-control'}),
-            'categoria' : forms.TextInput(attrs={'class' : 'form-control'}),
+            'categoria': forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['categoria'].queryset = Categoria.objects.all()
+
 
 class CajaForm(forms.ModelForm):
     class Meta:
