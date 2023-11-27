@@ -9,7 +9,8 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-
+from django.db.models import F, ExpressionWrapper, DecimalField, Sum
+from decimal import Decimal
 
 @method_decorator(login_required, name='dispatch')
 class VendedorView(PermissionRequiredMixin,View):
@@ -88,15 +89,14 @@ class GenerarVenta3(PermissionRequiredMixin, View):
     permission_required = "vendedor.permiso_vendedores"
 
     def get(self, request, *args, **kwargs):
-        # Obtener la última venta
         ultima_venta = Venta.objects.last()
+        detalles_compra = DetalleCompra.objects.filter(venta=ultima_venta).annotate(
+            detalle_subtotal=ExpressionWrapper(F('cantidad') * F('precio'), output_field=DecimalField())
+        )
 
-        # Obtener todos los detalles de compra asociados a la última venta
-        detalles_compra = DetalleCompra.objects.filter(venta=ultima_venta)
-
-        # Calculando el subtotal, IVA y total
-        subtotal = sum(detalle.precio for detalle in detalles_compra)
-        iva = subtotal * 0.19  # Suponiendo un IVA del 19%, ajusta según tu configuración
+        # Calcular el subtotal basado en todos los detalles de compra asociados a la venta
+        subtotal = detalles_compra.aggregate(total_subtotal=Sum('detalle_subtotal'))['total_subtotal'] or Decimal(0)
+        iva = subtotal * Decimal('0.19')  # Suponiendo un IVA del 19%
         total = subtotal + iva
 
         return render(request, 'ventas/generar_venta3.html', {
@@ -104,19 +104,19 @@ class GenerarVenta3(PermissionRequiredMixin, View):
             'iva': iva,
             'total': total,
         })
-    
+
     def post(self, request, *args, **kwargs):
         tipo_documento_elegido = request.POST.get('tipo_documento')
-        
         ultima_venta = Venta.objects.last()
         detalles_compra = DetalleCompra.objects.filter(venta=ultima_venta)
 
-        subtotal = sum(detalle.precio for detalle in detalles_compra)
-        iva = subtotal * 0.19
+        # Calcular el subtotal basado en todos los detalles de compra asociados a la venta
+        subtotal = detalles_compra.aggregate(total=Sum('precio'))['total'] or Decimal(0)
+        iva = subtotal * Decimal('0.19')  # Suponiendo un IVA del 19%
         total = subtotal + iva
 
-        if tipo_documento_elegido == '1':  
-            vendedor = ultima_venta.vendedor  
+        if tipo_documento_elegido == '1':
+            # Crear el documento tributario para Boleta
             nuevo_documento_tributario = DocumentoTributario.objects.create(
                 venta=ultima_venta,
                 subtotal=subtotal,
@@ -124,16 +124,13 @@ class GenerarVenta3(PermissionRequiredMixin, View):
                 precio_total=total,
                 tipo_id=tipo_documento_elegido,
                 fecha=timezone.now().date(),
-                vendedor=vendedor
+                vendedor=ultima_venta.vendedor
             )
-            # Resto del código...
 
-            return redirect('pagina_principal')  
-        
+            return redirect('vendedor')
         elif tipo_documento_elegido == '2':
-            vendedor = ultima_venta.vendedor  
-            cliente = ultima_venta.cliente  # Obtener el cliente de la última venta
-            
+            # Crear el documento tributario para Factura
+            cliente = ultima_venta.cliente
             nuevo_documento_tributario = DocumentoTributario.objects.create(
                 venta=ultima_venta,
                 subtotal=subtotal,
@@ -141,12 +138,10 @@ class GenerarVenta3(PermissionRequiredMixin, View):
                 precio_total=total,
                 tipo_id=tipo_documento_elegido,
                 fecha=timezone.now().date(),
-                vendedor=vendedor,
-                cliente=cliente  # Asignar el cliente al documento tributario si es factura
+                vendedor=ultima_venta.vendedor,
+                cliente=cliente
             )
-            # Resto del código...
 
-            return redirect('pagina_principal')  
+            return redirect('vendedor')
         else:
             return HttpResponse('Tipo de documento no válido')
-

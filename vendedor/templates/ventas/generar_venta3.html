@@ -4,12 +4,12 @@
     <h3>Seleccionar Tipo de Documento Tributario</h3>
     <form method="post">
         {% csrf_token %}
-        <label for="tipo_documento">Selecciona el tipo de documento:</label>
-        <select name="tipo_documento" id="tipo_documento">
+        <label  for="tipo_documento">Selecciona el tipo de documento:</label>
+        <select class="form-control mb-4" name="tipo_documento" id="tipo_documento">
             <option value="1">Boleta</option>
             <option value="2">Factura</option>
         </select>
-        <button type="submit">Generar Documento</button>
+        <button class="btn btn-secondary" type="submit">Generar Documento</button>
     </form>
 </div>
 {% endblock %}
