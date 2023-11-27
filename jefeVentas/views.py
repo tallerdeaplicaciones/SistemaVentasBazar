@@ -1,6 +1,5 @@
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
-from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from vendedor.models import Producto, Caja, Estado

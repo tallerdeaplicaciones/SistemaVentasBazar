@@ -38,9 +38,10 @@ class Categoria(models.Model):
 class Producto(models.Model):
     nombre = models.CharField(max_length=50, null=False, blank=False)
     precio = models.IntegerField(null=False, blank=False)
+    sku = models.CharField(max_length=10, null=False, blank=False, default= 'null')
     descripcion = models.TextField(null=False, blank=False)
     stock = models.IntegerField(null=False, blank=False)
-    imagen = models.ImageField(null=True, blank= True,upload_to='product_img',default='default_imagen.png')
+    imagen = models.ImageField(null=True, blank= True,upload_to='product_img')
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -63,7 +64,7 @@ class Caja(models.Model):
 
     def __str__(self):
         return f'Caja {self.id}'
-    
+
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=200, null= False, blank=False)
@@ -82,16 +83,16 @@ class Cliente(models.Model):
 
 class Venta(models.Model):
     fecha = models.DateField(null=False, blank=False)
-    subtotal = models.IntegerField(null=False, blank=False)
-    iva = models.FloatField(null=False, blank=False)
-    precio_total = models.IntegerField(null=False, blank=False)
+    subtotal = models.IntegerField(null=True, blank=True)
+    iva = models.FloatField(null=True, blank=True)
+    precio_total = models.IntegerField(null=True, blank=True)
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
     caja = models.ForeignKey(Caja, on_delete=models.CASCADE, default='1')
 
     def __str__(self) -> str:
         return f'Venta {self.id}'
-    
+
 
 class DetalleCompra(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
@@ -122,7 +123,7 @@ class DocumentoTributario(models.Model):
 
     def __str__(self) -> str:
         return f'Documento Tributario {self.id}'
-    
+
 
 class Secciones(models.Model):
     class Meta:
