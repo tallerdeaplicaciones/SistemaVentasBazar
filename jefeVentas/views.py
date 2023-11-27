@@ -8,9 +8,7 @@ from django.utils import timezone
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from vendedor.models import Venta
-from vendedor.models import DocumentoTributario
-from django.db.models import Prefetch
+from vendedor.models import Venta, DetalleCompra, TipoDocumentoTributario, DocumentoTributario
 
 
 # Create your views here.
@@ -113,8 +111,16 @@ class InformeVentasView(ListView):
     template_name = 'jefeVentas/informeVentas/informe_ventas.html'
     context_object_name = 'ventas'
 
-    def get_queryset(self):
-        
-        # No es necesario usar prefetch_related si cada Venta tiene un solo DocumentoTributario.
-        return Venta.objects.prefetch_related('detallecompra_set').all()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        ventas = context['ventas']
+
+        for venta in ventas:
+            detalles = venta.detallecompra_set.all()
+            venta.subtotal = sum(detalle.precio * detalle.cantidad for detalle in detalles)
+            venta.iva = venta.subtotal * 0.19
+            venta.precio_total = venta.subtotal + venta.iva
+            
+        return context
+
         

@@ -1,47 +1,48 @@
 {% extends 'jefeVentas/base.html' %}
 
 {% block content %}
-<!-- ... Aquí va el resto de tu contenido ... -->
-<div class="table-responsive">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Vendedor</th>
-                <th>Cliente</th>
-                <th>Total</th>
-                <th>Tipo de Documento</th>
-                <th>productos</th>
+<div class="container mt-4">
+    <h1>Informe de Ventas</h1>
+    <!-- aca incluir filtro por fechas -->
 
-            </tr>
-        </thead>
-        <tbody>
-            {% for venta in ventas %}
-            <tr>
-                <td>{{ venta.fecha }}</td>
-                <td>{{ venta.vendedor }}</td>
-                <td>{{ venta.cliente }}</td>
-                <td>{{ venta.precio_total }}</td>
-                <td>
-                    {% if venta.documento_tributario %}
-                        {{ venta.documento_tributario.tipo }}
-                    {% else %}
-                        Sin documento tributario
-                    {% endif %}
-                </td>
-                <td>
-                    {% for detalle in venta.detallecompra_set.all %}
-                        {{ detalle.producto.nombre }} (Cantidad: {{ detalle.cantidad }})
-                        <!-- Puedes agregar más detalles del producto aquí -->
-                    {% endfor %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">No hay ventas para mostrar.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nro</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Producto y Cantidad</th>
+                    <th>Subtotal</th>
+                    <th>IVA</th>
+                    <th>Total</th>
+                    <th>Tipo de Documento</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venta in ventas %}
+                <tr>
+                    <td>{{ venta.id }}</td>
+                    <td>{{ venta.fecha }}</td>
+                    <td>{{ venta.cliente }}</td>
+                    <td>
+                        {% for detalle in venta.detallecompra_set.all %}
+                            {{ detalle.producto.nombre }} (Cantidad: {{ detalle.cantidad }})<br>
+                        {% endfor %}
+                    </td>
+                    <td>{{ venta.subtotal }}</td>
+                    <td>{{ venta.iva }}</td>
+                    <td>{{ venta.precio_total }}</td>
+                    <td>{{ venta.tipo_documento }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">No hay ventas para mostrar.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
+

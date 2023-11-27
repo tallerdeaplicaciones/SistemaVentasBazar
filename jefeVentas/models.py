@@ -14,3 +14,6 @@ class DocumentoTributario(models.Model):
 class Venta(models.Model):
     documento_tributario = models.ForeignKey(DocumentoTributario, on_delete=models.CASCADE, related_name='ventas')
     fecha = models.DateField(auto_now_add=True)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    iva = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    precio_total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
