@@ -2,14 +2,18 @@
 
 {% block content %}
 
-<h2>Formulario de Creación de Productos</h2>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Formulario de Creación de Productos</h2>
 
-<form method="post" class="col-7 mx-auto" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="is-grouped mt-5">
-        <button class="btn btn-success mb-3" type="submit">Añadir Producto</button>
-        <a href="{% url 'pagina_principal' %}" class="btn btn-secondary">Volver</a>
-    </div>
-</form>
+    <form method="post" class="col-md-7 mx-auto" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        <div class="d-grid gap-2 mt-4">
+            <button class="btn btn-success" type="submit">Añadir Producto</button>
+            <a href="{% url 'pagina_inventario' %}" class="btn btn-secondary">Volver</a>
+        </div>
+    </form>
+</div>
+
 {% endblock %}

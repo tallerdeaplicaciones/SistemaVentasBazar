@@ -2,8 +2,17 @@
 {% extends 'jefeVentas/base.html' %}
 
 {% block content %}
-<div class="container">
+<style>
+    
+
+    #imagen {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+</style>
+<div class="container" id="contenedor-imagen">
     {% load static %}
-    <img src="{% static 'img/escritorio.jfif' %}" alt="">
+    <img id="imagen" src="{% static 'img/escritorio.jfif' %}" alt="" >
 </div>
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView,DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from vendedor.models import Producto, Caja, Estado
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
@@ -44,6 +44,11 @@ class ProductoDeleteView(DeleteView):
     model = Producto
     template_name = 'jefeVentas/inventario/delete.html'
     success_url = reverse_lazy('pagina_inventario')
+
+class ProductoDetailView(DetailView):
+    model = Producto
+    template_name = 'jefeVentas/inventario/detail.html'
+    context_object_name = 'productos'
 
 
 class CajaCreateView(CreateView):
