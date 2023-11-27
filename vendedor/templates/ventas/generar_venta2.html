@@ -1,0 +1,19 @@
+{% extends 'ventas/base_ventas.html' %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<div class="container">
+    <h3 class="mb-4">Seleccionar productos para la venta</h3>
+    <form method="POST" class="form-group">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Seleccionar</button>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#tabla-productos').DataTable();
+    });
+</script>
+{% endblock %}

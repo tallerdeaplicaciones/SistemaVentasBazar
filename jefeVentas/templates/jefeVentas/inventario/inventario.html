@@ -3,12 +3,14 @@
 {% block content %}
 
 <h2>Lista de Productos</h2>
-<div class="d-flex flex-row-reverse">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<div class="d-flex flex-row-reverse mb-4">
     <a class="btn btn-success" href="{% url 'producto_crear' %}"><i class="bi bi-plus-circle"></i>&nbsp;Agregar Productos</a>
 </div>
 
 {% if productos %}
-<table class="table table-striped">
+<table id="tabla-productos" class="table table-striped">
     <thead>
         <tr>
             <th>ID</th>
@@ -18,6 +20,7 @@
             <th>Descripcion</th>
             <th>stock</th>
             <th>Categoria</th>
+            <th>Opciones</th>
         </tr>
     </thead>
     <tbody>
@@ -51,5 +54,14 @@
 <h3>No existen Productos</h3>
 
 {% endif %}
-
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<!-- Incluye jQuery, que es una dependencia de DataTables. -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<!-- Incluye el script de JavaScript de DataTables. -->
+<script>
+    $(document).ready(function () {
+        $('#tabla-productos').DataTable();
+        //Inicializa DataTables en la tabla con id 'ticket-table'.
+    });
+</script>
 {% endblock %}
