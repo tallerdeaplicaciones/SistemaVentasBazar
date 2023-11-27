@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from vendedor.models import Producto, Caja, Estado
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
+from vendedor.models import Venta
 
 # Create your views here.
 class Pagina_principal(TemplateView):
@@ -78,3 +79,12 @@ class CajaUpdateView(UpdateView):
         caja.fecha_termino = timezone.now()  # Asignar la fecha y hora actual al cerrar la caja
         caja.save()
         return super().form_valid(form)
+    
+class InformeVentasView(ListView):
+    model = Venta
+    template_name = 'jefeVentas/informeVentas/informe_ventas.html'
+    context_object_name = 'ventas'
+    
+    def get_queryset(self):
+        # Esto mostrará todas las ventas del día actual
+        return Venta.objects.filter(fecha=timezone.now().date())
