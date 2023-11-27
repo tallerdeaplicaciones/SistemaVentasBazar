@@ -8,57 +8,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/base.css">
     <title>JefeVentas</title>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
-        <a class="navbar-brand" href="#">Sistema de Ventas</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'pagina_principal' %}">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'informeventas' %}">Informe de Ventas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#informe-tributario">Informe Tributario</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'pagina_inventario' %}">Inventario</a>
-                </li>
-                {% if caja_abierta %}
-                {% for caja in cajas %}
-                    {% if caja.estado.nombre == 'Abierto' %}
-                        <li class="nav-item">
-                            <a class="btn btn-outline-danger" href="{% url 'cerrar_caja' caja.pk %}">Cerrar Caja</a>
+    
+        <nav class="navbar navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+              <a class="navbar-brand" href="{% url 'pagina_principal' %}">Bazar "Monitos de la Nona"</a>
+              
+              <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Bazar "Monitos de la Nona"</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                  <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="{% url 'pagina_principal' %}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#informe-ventas">Informe de Ventas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#informe-tributario">Informe Tributario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pagina_inventario' %}">Inventario</a>
+                    </li>
+                    {% if caja_abierta %}
+                        {% for caja in cajas %}
+                            {% if caja.estado.nombre == 'Abierto' %}
+                                <li>
+                                    <a href="{% url 'cerrar_caja' caja.pk %}" class="btn btn-outline-danger">Cerrar Caja</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <li>
+                            <a href="{% url 'crear_caja' %}" class="btn btn-outline-primary">Abrir Caja</a>
                         </li>
                     {% endif %}
-                {% endfor %}
-            {% else %}
-                <!-- Mostrar el botón para abrir la caja si no hay ninguna abierta -->
-                <li class="nav-item">
-                    <a class="btn btn-outline-primary" href="{% url 'crear_caja' %}">Abrir Caja</a>
-                </li>
-            {% endif %}
-            </ul>
+                  </ul>
+                  <form class="d-flex mt-3" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-success" type="submit">Search</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </nav>
+        <div id="content">
+            <nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
+                <span id="toggle-btn" onclick="toggleNav()">☰</span>
+                <a class="navbar-brand" href="#">Sistema de Ventas</a>
+            </nav>
+
+            <div class="container mb-5">
+                <!-- Contenido dinámico -->
+                {% block content %}
+                {% endblock %}
+            </div>
+
+            <footer style="background-color: #f0f0f0; padding: 20px; text-align: center;">
+                <p>&copy; 2023 Monitos de la Nona - Todos los derechos reservados</p>
+                <!-- Agrega enlaces o información adicional sobre tu página web -->
+            </footer>
         </div>
-    </nav>
-    <div class="container mb-5">
-        <!--Contenido dinamico-->
-        {% block content %}
-        {% endblock %}
-    </div>
-    <footer style="background-color: #f0f0f0; padding: 20px; text-align: center;">
-        <p>&copy; 2023 Monitos de la Nona - Todos los derechos reservados</p>
-        <!-- Agrega enlaces o información adicional sobre tu página web -->
-    </footer>
-</body>
-</html>
+
+    <!-- JavaScript personalizado para abrir y cerrar el sidebar -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>

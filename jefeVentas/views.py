@@ -1,19 +1,24 @@
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView,DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from vendedor.models import Producto, Caja, Estado
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from vendedor.models import Venta
 from vendedor.models import DocumentoTributario
 from django.db.models import Prefetch
 
 
 # Create your views here.
-class Pagina_principal(TemplateView):
+@method_decorator(login_required, name='dispatch')
+class Pagina_principal(PermissionRequiredMixin,TemplateView):
     template_name = "jefeVentas/home_jefeVentas.html"
-    
+    permission_required = "vendedor.permiso_jefeVentas"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         vendedor_actual = self.request.user.vendedor  # Asegúrate de tener este atributo en tu usuario
@@ -24,37 +29,55 @@ class Pagina_principal(TemplateView):
         return context
 
 
-class Pagina_inventario(ListView):
+@method_decorator(login_required, name='dispatch')
+class Pagina_inventario(PermissionRequiredMixin,ListView):
     model = Producto
     template_name = "jefeVentas/inventario/inventario.html"
     context_object_name= 'productos'
+    permission_required = "vendedor.permiso_jefeVentas"
 
 
-class ProductoCreateView(CreateView):
+@method_decorator(login_required, name='dispatch')
+class ProductoCreateView(PermissionRequiredMixin,CreateView):
     model= Producto
     form_class =ProductoForm
     template_name='jefeventas/inventario/formulario.html'
     success_url = reverse_lazy('pagina_inventario')
+    permission_required = "vendedor.permiso_jefeVentas"
 
 
-class ProductoUpdateView(UpdateView):
+@method_decorator(login_required, name='dispatch')
+class ProductoUpdateView(PermissionRequiredMixin,UpdateView):
     model = Producto
     form_class = ProductoForm
     template_name = 'jefeVentas/inventario/edit_form.html'
     success_url = reverse_lazy('pagina_inventario')
+    permission_required = "vendedor.permiso_jefeVentas"
 
 
-class ProductoDeleteView(DeleteView):
+@method_decorator(login_required, name='dispatch')
+class ProductoDeleteView(PermissionRequiredMixin,DeleteView):
     model = Producto
     template_name = 'jefeVentas/inventario/delete.html'
     success_url = reverse_lazy('pagina_inventario')
+    permission_required = "vendedor.permiso_jefeVentas"
 
 
-class CajaCreateView(CreateView):
+@method_decorator(login_required, name='dispatch')
+class ProductoDetailView(PermissionRequiredMixin,DetailView):
+    model = Producto
+    template_name = 'jefeVentas/inventario/detail.html'
+    context_object_name = 'productos'
+    permission_required = "vendedor.permiso_jefeVentas"
+
+
+@method_decorator(login_required, name='dispatch')
+class CajaCreateView(PermissionRequiredMixin,CreateView):
     model= Caja
     form_class = CajaForm
     template_name='jefeventas/caja/crear_caja.html'
     success_url = reverse_lazy('pagina_principal')
+    permission_required = "vendedor.permiso_jefeVentas"
 
     def form_valid(self, form):
         # Asignar el estado por defecto "Abierto" a la nueva caja
@@ -69,7 +92,10 @@ class CajaCreateView(CreateView):
         caja.save()
         return super().form_valid(form)
 
-class CajaUpdateView(UpdateView):
+
+@method_decorator(login_required, name='dispatch')
+class CajaUpdateView(PermissionRequiredMixin,UpdateView):
+    permission_required = "vendedor.permiso_jefeVentas"
     model = Caja
     form_class = CajaUpdateForm
     template_name = 'jefeVentas/caja/cerrar_caja.html'

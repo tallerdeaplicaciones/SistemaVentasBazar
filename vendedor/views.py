@@ -1,14 +1,17 @@
-# vendedor/views.py
 from django.views.generic.edit import CreateView, FormView
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.views import View
-from .models import Venta, DetalleCompra, Producto, TipoDocumentoTributario, DocumentoTributario
+from .models import Venta, DetalleCompra, Producto, DocumentoTributario
 from .forms import VentasForm, DetalleCompraForm
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
+
+@method_decorator(login_required, name='dispatch')
 class VendedorView(PermissionRequiredMixin,View):
     template_name = 'vendedor/vendedor.html'  # Asegúrate de tener la ruta correcta al template
     permission_required = "vendedor.permiso_vendedores"
@@ -16,6 +19,7 @@ class VendedorView(PermissionRequiredMixin,View):
         return render(request, self.template_name)
 
 
+@method_decorator(login_required, name='dispatch')
 class GenerarVenta1(PermissionRequiredMixin,CreateView):
     model = Venta
     form_class = VentasForm
@@ -45,6 +49,8 @@ class GenerarVenta1(PermissionRequiredMixin,CreateView):
     def get_success_url(self):
         return reverse_lazy('ventas2')
 
+
+@method_decorator(login_required, name='dispatch')
 class GenerarVenta2(PermissionRequiredMixin, FormView):
     permission_required = "vendedor.permiso_vendedores"
     template_name = 'ventas/generar_venta2.html'
@@ -77,6 +83,7 @@ class GenerarVenta2(PermissionRequiredMixin, FormView):
         return redirect('ventas3')
 
 
+@method_decorator(login_required, name='dispatch')
 class GenerarVenta3(PermissionRequiredMixin, View):
     permission_required = "vendedor.permiso_vendedores"
 
