@@ -1,55 +1,47 @@
 {% extends 'jefeVentas/base.html' %}
 
 {% block content %}
+<!-- ... Aquí va el resto de tu contenido ... -->
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Vendedor</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Tipo de Documento</th>
+                <th>productos</th>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-        </div>
-
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <h1 class="h2">Reportes periódicos (Día específico)</h1>
-
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Emisor</th>
-                            <th>Rut Emisor</th>
-                            <th>Razon social del cliente</th>
-                            <th>direccion</th>
-                            <th>Giro</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Hora</th>
-                            <th>Número de Transacción</th>
-                            <th>sku</th>
-                            <th>Nombre del producto</th>
-                            <th>Cant.</th>
-                            <th>Precio Unit.</th>
-                            <th>Sub total</th>
-                            <th>Impuesto(19%)</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </div>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.fecha }}</td>
+                <td>{{ venta.vendedor }}</td>
+                <td>{{ venta.cliente }}</td>
+                <td>{{ venta.precio_total }}</td>
+                <td>
+                    {% if venta.documento_tributario %}
+                        {{ venta.documento_tributario.tipo }}
+                    {% else %}
+                        Sin documento tributario
+                    {% endif %}
+                </td>
+                <td>
+                    {% for detalle in venta.detallecompra_set.all %}
+                        {{ detalle.producto.nombre }} (Cantidad: {{ detalle.cantidad }})
+                        <!-- Puedes agregar más detalles del producto aquí -->
+                    {% endfor %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No hay ventas para mostrar.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

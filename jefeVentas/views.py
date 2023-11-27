@@ -6,6 +6,9 @@ from vendedor.models import Producto, Caja, Estado
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
 from vendedor.models import Venta
+from vendedor.models import DocumentoTributario
+from django.db.models import Prefetch
+
 
 # Create your views here.
 class Pagina_principal(TemplateView):
@@ -83,7 +86,9 @@ class InformeVentasView(ListView):
     model = Venta
     template_name = 'jefeVentas/informeVentas/informe_ventas.html'
     context_object_name = 'ventas'
-    
+
     def get_queryset(self):
-        # Esto mostrará todas las ventas del día actual
-        return Venta.objects.filter(fecha=timezone.now().date())
+        
+        # No es necesario usar prefetch_related si cada Venta tiene un solo DocumentoTributario.
+        return Venta.objects.prefetch_related('detallecompra_set').all()
+        
