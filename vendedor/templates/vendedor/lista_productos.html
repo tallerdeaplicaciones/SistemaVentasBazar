@@ -1,0 +1,21 @@
+<!-- lista_productos.html -->
+<div id="productosModalBody">
+    <div class="table-container">
+        <table class="table" id="productosTable">
+            <thead>
+                <tr>
+                    <th>Nombre del Producto</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                    <tr data-producto-id="{{ producto.id }}" class="seleccionable">
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.precio }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

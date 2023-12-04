@@ -15,13 +15,13 @@
                     <input type="text" class="form-control" placeholder="Buscar">
                 </div>
             </div>
-            
+
             <div class="col-md-4">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-person-circle"></i>
                     {% if user.is_authenticated %}
-                        <!-- Tu código para mostrar el nombre del usuario -->
-                        <span class="fw-bold"> {{ user.get_full_name }}</span>
+                    <!-- Tu código para mostrar el nombre del usuario -->
+                    <span class="fw-bold"> {{ user.get_full_name }}</span>
                     {% endif %}
 
                 </div>
@@ -34,59 +34,38 @@
             <div class="col-md-8 col-12">
                 <!-- Este div está a la izquierda -->
                 <div class="box h-380 w-100 p-3 d-flex flex-column" id="azul">
-                    <table class="table">
+                    <table class="table" id="listaProductosVendedor">
                         <thead>
                             <tr>
                                 <th>
                                     <h2>Nombre del producto</h2>
                                 </th>
-                                <th>Cantidad</th>
                                 <th>Precio</th>
-                                <th>Barra</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Puedes repetir esta fila para cada producto -->
-                            <tr>
-                                <td>Papas fritas</td>
-                                <td>1</td>
-                                <td>$15.99</td>
-                                <td>123456789</td>
-                            </tr>
-                            <tr>
-                                <td>Papas fritas</td>
-                                <td>1</td>
-                                <td>$15.99</td>
-                                <td>123456789</td>
-                            </tr>
-                            <tr>
-                                <td>Papas fritas</td>
-                                <td>1</td>
-                                <td>$15.99</td>
-                                <td>123456789</td>
-                            </tr>
-                            <!-- ... Agrega más filas según sea necesario -->
+                            <!-- Puedes agregar las filas de productos aquí dinámicamente -->
                         </tbody>
                     </table>
                 </div>
-                <!-- Este div está debajo del primero en la izquierda -->
+                <!-- Nuevo código para mostrar el subtotal, impuestos y total -->
                 <div class="box mt-5 h-180" id="rojo">
-                    <!-- Contenido del cuadro debajo del primero en la izquierda -->
                     <table class="table mt-auto">
                         <tr>
                             <td>Subtotal:</td>
-                            <td class="text-end">0.00</td>
+                            <td id="subtotalContainer" class="text-end">0.0</td>
                         </tr>
                         <tr>
                             <td>Impuestos:</td>
-                            <td class="text-end">0.00</td>
+                            <td id="impuestosContainer" class="text-end">0.0</td>
                         </tr>
                         <tr>
                             <td class="fw-bold">TOTAL:</td>
-                            <td class="fw-bold text-end">0.00</td>
+                            <td id="totalContainer" class="fw-bold text-end">0.0</td>
                         </tr>
                     </table>
                 </div>
+
             </div>
             <div class="col-md-4 col-12">
                 <!-- Este div está a la derecha -->
@@ -94,9 +73,18 @@
                     <!-- Contenido del cuadro derecho -->
                     <div id="menu-superior">
                         <div style="font-size: 75px;"><i class="bi bi-x-circle"></i></div>
-                        <div style="font-size: 80px;"><i class="bi bi-search"></i></div>
-                        <div style="font-size: 80px;"><a  href="{% url 'ventas1' %}"><i class="bi bi-cart4"></i></a></div>
+
+                        <div style="font-size: 75px;">
+                            <a href="javascript:void(0)" id="verProductosBtn">
+                                <i class="bi bi-search"></i>
+                            </a>
+                        </div>
+
+                        <div style="font-size: 80px;"><a href="#"><i class="bi bi-cart4"></i></a></div>
                         <div style="font-size: 80px;"><i class="bi bi-menu-down"></i></div>
+                    </div>
+                    <div id="listaProductosContainer" hidden>
+                        {% include 'vendedor/lista_productos.html' %}
                     </div>
                     <!-- Contenedor adicional para elementos hacia abajo con margen superior -->
                     <div id="menu-inferior">
@@ -109,6 +97,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 {% endblock %}
