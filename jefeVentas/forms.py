@@ -22,9 +22,11 @@ class ProductoForm(forms.ModelForm):
 class CajaForm(forms.ModelForm):
     class Meta:
         model = Caja
-        fields = ['monto']
+        fields = ['jefeVentas','estado','fecha_termino']
         widgets = {
-            'monto': forms.TextInput(attrs={'class': 'form-control'}),
+            'jefeVentas': forms.TextInput(attrs={'class':'form-control'}),
+            'estado': forms.TextInput(attrs={'class':'form-control'}),
+            'fecha_termino': forms.TextInput(attrs={'class':'form-control'}),
         }
 
 class CajaUpdateForm(forms.ModelForm):

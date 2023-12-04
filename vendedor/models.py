@@ -58,7 +58,6 @@ class Estado(models.Model):
 class Caja(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     jefeVentas = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
-    monto = models.IntegerField(null=False, blank=False)
     estado = models.ForeignKey(Estado, on_delete=models.CASCADE, default="Abierto")
     fecha_termino = models.DateTimeField(null=True, blank=True)
 

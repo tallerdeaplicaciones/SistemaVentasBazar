@@ -1,7 +1,5 @@
-from django.views.generic.list import ListView
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView,DetailView
-from django.views.generic.edit import CreateView,UpdateView,DeleteView
+from django.views.generic import TemplateView,DetailView,ListView,CreateView,UpdateView,DeleteView
 from vendedor.models import Producto, Caja, Estado
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
@@ -55,7 +53,7 @@ class CajaCreateView(CreateView):
     model= Caja
     form_class = CajaForm
     template_name='jefeventas/caja/crear_caja.html'
-    success_url = reverse_lazy('pagina_principal')
+    success_url = reverse_lazy('pagina_caja')
 
     def form_valid(self, form):
         # Asignar el estado por defecto "Abierto" a la nueva caja
@@ -70,11 +68,16 @@ class CajaCreateView(CreateView):
         caja.save()
         return super().form_valid(form)
 
+class CajaDetailView(DetailView):
+    model = Caja
+    template_name = 'jefeVentas/caja/detail.html'
+    context_object_name = 'cajas'
+
 class CajaUpdateView(UpdateView):
     model = Caja
     form_class = CajaUpdateForm
     template_name = 'jefeVentas/caja/cerrar_caja.html'
-    success_url = reverse_lazy('pagina_principal')
+    success_url = reverse_lazy('pagina_caja')
 
     def form_valid(self, form):
         caja = form.save(commit=False)
@@ -82,3 +85,8 @@ class CajaUpdateView(UpdateView):
         caja.fecha_termino = timezone.now()  # Asignar la fecha y hora actual al cerrar la caja
         caja.save()
         return super().form_valid(form)
+
+class CajaPagina(ListView):
+    model = Caja
+    template_name = 'jefeVentas/caja/caja.html'
+    context_object_name = 'cajas'

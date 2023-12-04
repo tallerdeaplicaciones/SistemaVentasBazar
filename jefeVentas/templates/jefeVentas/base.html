@@ -54,6 +54,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'pagina_inventario' %}">Inventario</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pagina_caja' %}">Cajas</a>
+                    </li>
                     {% if caja_abierta %}
                         {% for caja in cajas %}
                             {% if caja.estado.nombre == 'Abierto' %}
