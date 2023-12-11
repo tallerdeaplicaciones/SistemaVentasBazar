@@ -1,7 +1,5 @@
-from django.views.generic.list import ListView
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView,DetailView
-from django.views.generic.edit import CreateView,UpdateView,DeleteView
+from django.views.generic import TemplateView,DetailView,ListView,CreateView,UpdateView,DeleteView
 from vendedor.models import Producto, Caja, Estado
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
@@ -32,6 +30,13 @@ class Pagina_inventario(PermissionRequiredMixin,ListView):
     model = Producto
     template_name = "jefeVentas/inventario/inventario.html"
     context_object_name= 'productos'
+    permission_required = "vendedor.permiso_jefeVentas"
+
+@method_decorator(login_required, name='dispatch')
+class Pagina_caja(PermissionRequiredMixin,ListView):
+    model = Caja
+    template_name = "jefeVentas/caja/caja.html"
+    context_object_name= 'cajas'
     permission_required = "vendedor.permiso_jefeVentas"
 
 
@@ -75,7 +80,6 @@ class CajaCreateView(PermissionRequiredMixin,CreateView):
     form_class = CajaForm
     template_name='jefeventas/caja/crear_caja.html'
     success_url = reverse_lazy('pagina_principal')
-    permission_required = "vendedor.permiso_jefeVentas"
 
     def form_valid(self, form):
         # Asignar el estado por defecto "Abierto" a la nueva caja
@@ -89,6 +93,13 @@ class CajaCreateView(PermissionRequiredMixin,CreateView):
         caja.estado = estado_abierto
         caja.save()
         return super().form_valid(form)
+@method_decorator(login_required, name='dispatch')
+class CajaDetailView(PermissionRequiredMixin,DetailView):
+    model = Caja
+    template_name = 'jefeVentas/caja/detail.html'
+    context_object_name = 'cajas'
+    permission_required = "vendedor.permiso_jefeVentas"
+    
 
 
 @method_decorator(login_required, name='dispatch')
@@ -97,7 +108,7 @@ class CajaUpdateView(PermissionRequiredMixin,UpdateView):
     model = Caja
     form_class = CajaUpdateForm
     template_name = 'jefeVentas/caja/cerrar_caja.html'
-    success_url = reverse_lazy('pagina_principal')
+    success_url = reverse_lazy('pagina_caja')
 
     def form_valid(self, form):
         caja = form.save(commit=False)
@@ -105,22 +116,3 @@ class CajaUpdateView(PermissionRequiredMixin,UpdateView):
         caja.fecha_termino = timezone.now()  # Asignar la fecha y hora actual al cerrar la caja
         caja.save()
         return super().form_valid(form)
-    
-class InformeVentasView(ListView):
-    model = Venta
-    template_name = 'jefeVentas/informeVentas/informe_ventas.html'
-    context_object_name = 'ventas'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        ventas = context['ventas']
-
-        for venta in ventas:
-            detalles = venta.detallecompra_set.all()
-            venta.subtotal = sum(detalle.precio * detalle.cantidad for detalle in detalles)
-            venta.iva = venta.subtotal * 0.19
-            venta.precio_total = venta.subtotal + venta.iva
-            
-        return context
-
-        

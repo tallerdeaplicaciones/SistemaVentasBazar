@@ -42,21 +42,23 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page"
-                                href="{% url 'pagina_principal' %}">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'informeventas' %}">Informe de Ventas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#informe-tributario">Informe Tributario</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'pagina_inventario' %}">Inventario</a>
-                        </li>
-                        {% if caja_abierta %}
+                  <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="{% url 'pagina_principal' %}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#informe-ventas">Informe de Ventas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#informe-tributario">Informe Tributario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pagina_inventario' %}">Inventario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pagina_caja' %}">Cajas</a>
+                    </li>
+                    <!-- {% if caja_abierta %}
                         {% for caja in cajas %}
                         {% if caja.estado.nombre == 'Abierto' %}
                         <li>
@@ -68,7 +70,7 @@
                         <li>
                             <a href="{% url 'crear_caja' %}" class="btn btn-outline-primary">Abrir Caja</a>
                         </li>
-                        {% endif %}
+                        {% endif %} -->
                     </ul>
                     <form class="d-flex mt-3" role="search">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
