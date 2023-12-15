@@ -1,7 +1,7 @@
 from django.views.generic.edit import CreateView, FormView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .models import Venta, DetalleCompra, Producto, DocumentoTributario
+from .models import Venta, DetalleCompra, Producto, DocumentoTributario, Caja, Cliente
 from .forms import VentasForm, DetalleCompraForm
 from django.utils import timezone
 from django.urls import reverse_lazy
@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.db.models import F, ExpressionWrapper, DecimalField, Sum
 from decimal import Decimal
+
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 
@@ -56,3 +57,39 @@ def agregar_producto_a_venta(request, producto_id):
 
     # Redirigir a la vista de la venta actual
     return redirect('ventas3')  # Ajusta esto según tus URL existentes
+
+
+
+
+def confirmar_venta(request):
+    if request.method == 'POST':
+        # Obtener datos del cuerpo de la solicitud
+        data = request.POST
+
+        # Lógica para confirmar la venta y crear instancias en las tablas Venta y DetalleCompra
+        # Puedes obtener datos adicionales de la solicitud POST si es necesario.
+        # Por ejemplo, si tienes más datos, puedes obtenerlos de la solicitud AJAX como data['nombre_del_campo']
+
+        # Ejemplo de creación de instancias de Venta y DetalleCompra
+        venta = Venta.objects.create(
+            fecha=timezone.now(),
+            subtotal=data['subtotal'],
+            iva=data['iva'],
+            precio_total=data['precio_total'],
+            vendedor=request.user.vendedor,
+            cliente = Cliente.objects.get(id=data['cliente_id']),
+            caja= Caja.objects.get(nombre='Predeterminada')  # Ajusta según tu lógica
+        )
+        
+        detalle_compra = DetalleCompra.objects.create(
+            producto=Producto.objects.get(id=data['producto_id']),
+            cantidad=data['cantidad'],
+            precio=data['precio'],
+            venta=venta
+        )
+
+        # Puedes devolver una respuesta JSON indicando el éxito o cualquier información adicional.
+        return JsonResponse({'mensaje': 'Venta confirmada con éxito'})
+
+    # Devuelve una respuesta de error si la solicitud no es POST
+    return JsonResponse({'error': 'Método no permitido'}, status=405)

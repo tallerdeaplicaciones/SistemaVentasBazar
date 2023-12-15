@@ -1,32 +1,36 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // contenedor que recibe la lista de productos
     var listaProductosContainer = document.getElementById('listaProductosContainer');
+    // boton para activar la lista de productos en pantalla
     var verProductosBtn = document.getElementById('verProductosBtn');
+    // este es el table que esta en lista_productos.html  osea la lista en si
     var productosTable = document.getElementById('productosTable');
+    // aqui es donde estamos ingresando la lista de productos seleccionados
     var listaProductosVendedor = document.getElementById('listaProductosVendedor');
+    // clarmente el container que recibe el subtotal en pantalla
     var subtotalContainer = document.getElementById('subtotalContainer');
+    // lo mismo para impuestos osea el iva
     var impuestosContainer = document.getElementById('impuestosContainer');
+    // aqui mostramos el total
     var totalContainer = document.getElementById('totalContainer');
-
-    // Variable para rastrear si la lista de productos está abierta
+    // variable para rastrear si la lista de productos está abierta
     var listaAbierta = false;
-
-    // Variable para almacenar el total
+    // variable para almacenar el total
     var total = 0;
-    // Verificar si los elementos existen antes de intentar actualizar su contenido
+    // verificar si los elementos existen antes de intentar actualizar su contenido
     if (subtotalContainer && impuestosContainer && totalContainer) {
         // Inicializar los elementos con valores iniciales
         subtotalContainer.textContent = '0.0';
         impuestosContainer.textContent = '0.0';
         totalContainer.textContent = '0.0';
 
-        // Resto del código...
     } else {
         console.error('Al menos uno de los contenedores no se encontró en el DOM.');
     }
 
-    // Agrega un event listener al nuevo elemento de clic
+    // agrega un event listener al nuevo elemento de clic, este es el "icono search"
     verProductosBtn.addEventListener('click', function () {
-        // Alternar la visibilidad del contenedor usando la variable de seguimiento
+        // alternar la visibilidad del contenedor usando la variable de seguimiento
         listaAbierta = !listaAbierta;
         listaProductosContainer.hidden = !listaAbierta;
 
@@ -60,14 +64,13 @@ document.addEventListener('DOMContentLoaded', function () {
             if (listaAbierta) {
                 listaProductosContainer.hidden = true;
                 listaAbierta = false;
-                console.log('Cerraste el contenedor');
+                // console.log('Cerraste el contenedor');
             }
         }
     });
-
-    // Función para agregar a la nueva lista (puedes personalizar según tus necesidades)
+    // función para agregar a la nueva lista
     function agregarALista(productoId) {
-        // Obtener información del producto del servidor (puedes personalizar según tus necesidades)
+        // obtener información del producto del servidor (puedes personalizar según tus necesidades)
         fetch(`/vendedor/obtener_producto/${productoId}/`)
             .then(response => response.json())
             .then(data => {
@@ -98,3 +101,5 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
 });
+
+
