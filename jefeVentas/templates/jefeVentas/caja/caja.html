@@ -38,6 +38,18 @@
                         <td>{{ caja.fecha_termino }}</td>
                         <td>
                             <div class="d-flex">
+                                        <!--Control del estado de la caja-->
+                                        {% if caja.estado.nombre == 'Abierto' %}
+                                        <li>
+                                            <a href="{% url 'actualizar_estado_caja' caja.pk %}" class="btn btn-outline-danger">Cerrar Caja</a>
+                                        </li>
+                                        {% else %}
+                                        <li>
+                                            <a href="{% url 'actualizar_estado_caja' caja.pk %}" class="btn btn-outline-primary">Abrir Caja</a>
+                                        </li>
+                                        {% endif %}
+                                   
+                                
                                 <a class="btn btn-dark me-2" href="{% url 'pagina_caja_detail' caja.id %}">
                                     <i class="bi bi-search"></i> Detalles
                                 </a>

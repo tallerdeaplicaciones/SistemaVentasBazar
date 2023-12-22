@@ -24,9 +24,9 @@ class CajaForm(forms.ModelForm):
         model = Caja
         fields = ['jefeVentas','estado','fecha_termino']
         widgets = {
-            'jefeVentas': forms.TextInput(attrs={'class':'form-control'}),
-            'estado': forms.TextInput(attrs={'class':'form-control'}),
-            'fecha_termino': forms.TextInput(attrs={'class':'form-control'}),
+            'jefeVentas': forms.Select(attrs={'class':'form-control'}),
+            'estado': forms.Select(attrs={'class':'form-control'}),
+            #'fecha_termino': forms.TextInput(attrs={'class':'form-control'})
         }
 
 class CajaUpdateForm(forms.ModelForm):

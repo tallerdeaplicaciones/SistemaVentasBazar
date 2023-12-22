@@ -80,13 +80,15 @@ class ProductoDetailView(PermissionRequiredMixin,DetailView):
     context_object_name = 'productos'
     permission_required = "vendedor.permiso_jefeVentas"
 
-
+#CRUD de caja.
 @method_decorator(login_required, name='dispatch')
 class CajaCreateView(PermissionRequiredMixin,CreateView):
     model= Caja
     form_class = CajaForm
-    template_name='jefeventas/caja/crear_caja.html'
+    template_name='jefeventas/caja/actualizar_caja.html'
     success_url = reverse_lazy('pagina_principal')
+    permission_required = "vendedor.permiso_jefeVentas"
+
 
     def form_valid(self, form):
         # Asignar el estado por defecto "Abierto" a la nueva caja
@@ -115,12 +117,18 @@ class CajaUpdateView(PermissionRequiredMixin,UpdateView):
     permission_required = "vendedor.permiso_jefeVentas"
     model = Caja
     form_class = CajaUpdateForm
-    template_name = 'jefeVentas/caja/cerrar_caja.html'
+    template_name = 'jefeVentas/caja/actualizar_caja.html'
     success_url = reverse_lazy('pagina_caja')
 
     def form_valid(self, form):
         caja = form.save(commit=False)
-        caja.estado = Estado.objects.get(nombre='Cerrado')  # Obtener el estado 'Cerrado'
-        caja.fecha_termino = timezone.now()  # Asignar la fecha y hora actual al cerrar la caja
+        
+        if caja.estado.nombre == "Abierto":
+            caja.estado = Estado.objects.get(nombre='Cerrado')  # Obtener el estado 'Cerrado'
+            caja.fecha_termino = timezone.now()  # Asignar la fecha y hora actual al cerrar la caja
+        else :
+            caja.estado = Estado.objects.get(nombre='Abierto')
+            caja.fecha_termino = None
         caja.save()
         return super().form_valid(form)
+

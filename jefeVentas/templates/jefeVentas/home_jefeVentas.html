@@ -1,18 +1,60 @@
-
 {% extends 'jefeVentas/base.html' %}
 
 {% block content %}
 <style>
-    
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    #contenedor-imagen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 56px; /* Ajusta según la altura de tu Navbar y Footer */
+        overflow: hidden;
+        z-index: 1; /* Asegura que el contenedor esté por encima del contenido */
+    }
+
+    #contenedor-imagen::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 56px; /* Ajusta según la altura de tu Navbar y Footer */
+        background: rgba(10, 10, 10, 0.712); /* Fondo negro semitransparente */
+        z-index: 1; /* Asegura que la capa esté por encima del contenido */
+    }
 
     #imagen {
-        width: 100%;
-        height: auto;
-        display: block;
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+        z-index: 2; /* Asegura que la imagen esté por encima de la capa negra */
+        
     }
+    p{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ffffff; /* Color del texto */
+        font-size: 25px;
+        text-align: center;
+        z-index: 3;
+        }
+
+    
 </style>
-<div class="container" id="contenedor-imagen">
+<p>Querido amigo. En "Los Monitos de la Nona", reconocemos y valoramos el esfuerzo constante de nuestros empleados. Cada uno de ustedes aporta una chispa única 
+    a nuestro ambiente, y tu contribución no es la excepción. Estamos emocionados por seguir construyendo juntos esta historia.</p>
+<div id="contenedor-imagen">
     {% load static %}
-    <img id="imagen" src="{% static 'img/escritorio.jfif' %}" alt="" >
+    <img id="imagen" src="{% static 'img/escritorio.jfif' %}" alt="">
 </div>
+
+
 {% endblock %}
