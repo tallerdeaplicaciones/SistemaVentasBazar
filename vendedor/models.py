@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 
 # Create your models here.
 class Turno(models.Model):
@@ -81,7 +81,7 @@ class Cliente(models.Model):
 
 
 class Venta(models.Model):
-    fecha = models.DateField(null=False, blank=False)
+    fecha = models.DateField(default=timezone.now,null=False, blank=False)
     subtotal = models.IntegerField(null=True, blank=True)
     iva = models.FloatField(null=True, blank=True)
     precio_total = models.IntegerField(null=True, blank=True)
@@ -110,8 +110,8 @@ class TipoDocumentoTributario(models.Model):
         return self.nombre
 
 
-class DocumentoTributario(models.Model):
-    fecha = models.DateField(null=False, blank=False)
+class InformeDiario(models.Model):
+    fecha = models.DateField(default=timezone.now,null=False, blank=False)
     subtotal = models.IntegerField(null=False, blank=False)
     iva = models.FloatField(null=False, blank=False)
     precio_total = models.IntegerField(null=False, blank=False)
@@ -130,3 +130,4 @@ class Secciones(models.Model):
             ("permiso_jefeVentas", "Permisos necesarios para el Jefe de Ventas"),
             ("permiso_vendedores", "Permisos necesarios para los Vendedores")
         )
+        

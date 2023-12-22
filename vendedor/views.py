@@ -1,7 +1,7 @@
 from django.views.generic.edit import CreateView, FormView
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Venta, DetalleCompra, Producto, DocumentoTributario
+from .models import Venta, DetalleCompra, Producto, InformeDiario
 from .forms import VentasForm, DetalleCompraForm
 from django.utils import timezone
 from django.urls import reverse_lazy
@@ -117,7 +117,7 @@ class GenerarVenta3(PermissionRequiredMixin, View):
 
         if tipo_documento_elegido == '1':
             # Crear el documento tributario para Boleta
-            nuevo_documento_tributario = DocumentoTributario.objects.create(
+            nuevo_documento_tributario = InformeDiario.objects.create(
                 venta=ultima_venta,
                 subtotal=subtotal,
                 iva=iva,
@@ -131,7 +131,7 @@ class GenerarVenta3(PermissionRequiredMixin, View):
         elif tipo_documento_elegido == '2':
             # Crear el documento tributario para Factura
             cliente = ultima_venta.cliente
-            nuevo_documento_tributario = DocumentoTributario.objects.create(
+            nuevo_documento_tributario = InformeDiario.objects.create(
                 venta=ultima_venta,
                 subtotal=subtotal,
                 iva=iva,

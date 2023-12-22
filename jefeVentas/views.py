@@ -1,12 +1,11 @@
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView,DetailView,ListView,CreateView,UpdateView,DeleteView
-from vendedor.models import Producto, Caja, Estado
+from vendedor.models import Producto, Caja, Estado, InformeDiario
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from vendedor.models import Venta, DetalleCompra, TipoDocumentoTributario, DocumentoTributario
 
 
 # Create your views here.
@@ -24,7 +23,7 @@ class Pagina_principal(PermissionRequiredMixin,TemplateView):
         context['caja_abierta'] = caja_abierta
         return context
 
-
+#Vista para el invetario.
 @method_decorator(login_required, name='dispatch')
 class Pagina_inventario(PermissionRequiredMixin,ListView):
     model = Producto
@@ -32,6 +31,7 @@ class Pagina_inventario(PermissionRequiredMixin,ListView):
     context_object_name= 'productos'
     permission_required = "vendedor.permiso_jefeVentas"
 
+#Vista para las cajas
 @method_decorator(login_required, name='dispatch')
 class Pagina_caja(PermissionRequiredMixin,ListView):
     model = Caja
@@ -39,6 +39,13 @@ class Pagina_caja(PermissionRequiredMixin,ListView):
     context_object_name= 'cajas'
     permission_required = "vendedor.permiso_jefeVentas"
 
+#Vista para los informes de ventas diarios.
+@method_decorator(login_required, name='dispatch')
+class Pagina_informe_diario(PermissionRequiredMixin,ListView):
+    model = InformeDiario
+    template_name = "jefeVentas/informeVentas/informe_ventas.html"
+    context_object_name = 'ventas'
+    permission_required = "vendedor.permiso_jefeVentas"
 
 @method_decorator(login_required, name='dispatch')
 class ProductoCreateView(PermissionRequiredMixin,CreateView):
@@ -93,6 +100,7 @@ class CajaCreateView(PermissionRequiredMixin,CreateView):
         caja.estado = estado_abierto
         caja.save()
         return super().form_valid(form)
+    
 @method_decorator(login_required, name='dispatch')
 class CajaDetailView(PermissionRequiredMixin,DetailView):
     model = Caja
