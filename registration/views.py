@@ -43,7 +43,7 @@ class SignUpView(CreateView):
     template_name = 'registration/sign_up.html'
     
     def get_success_url(self):
-        return reverse_lazy('login')
+        return reverse_lazy('profile')
     
     def get_form(self, form_class=None):
         form = super(SignUpView, self).get_form()
@@ -53,15 +53,26 @@ class SignUpView(CreateView):
         form.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'form-control'})
 
         return form
+    # def form_valid(self, form):
+    #     response = super().form_valid(form)
+    #     user = self.object
+
+        
     
 class ProfileUpdate(UpdateView):
     form_class = VendedorForm
-    success_url = reverse_lazy('profile')
+    success_url = reverse_lazy('pagina_principal')
     template_name = 'registration/profile_form.html'
     
     def get_object(self):
-        profile, create = Vendedor.objects.get_or_create(user = self.request.user)
+        profile, created = Vendedor.objects.get_or_create(user=self.request.user)
         return profile
+
+    def form_valid(self, form):
+        print(form.cleaned_data)  # Imprime los datos del formulario
+        return super().form_valid(form)
+    
+        
 
 
 

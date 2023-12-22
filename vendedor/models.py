@@ -12,6 +12,8 @@ class Turno(models.Model):
     def __str__(self) -> str:
         return self.nombre
 
+class Cargo(models.Model):
+    user = models.CharField(max_length=50, blank=False, null=False)
 
 class Vendedor(models.Model):
     name = models.CharField(max_length=200,null=False, blank=False)
