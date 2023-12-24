@@ -58,3 +58,17 @@
     justify-content: space-between; 
     margin-top: 315px;
 }
+
+/* efectos dashboard */
+/* cards */
+
+/* Agrega sombra al pasar el mouse */
+/* .card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+} */
+
+/* Cambia el fondo al hacer clic */
+/* .card:active {
+    background-color: #f8f9fa;
+} */

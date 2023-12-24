@@ -1,4 +1,4 @@
-{% extends 'ventas/base_ventas.html' %}
+{% extends 'vendedor/base.html' %}
 {% block content %}
 
 <div class="container">
@@ -9,6 +9,10 @@
         <button type="submit" class="btn btn-success">Seleccionar</button>
         <a href="{% url 'ventas3' %}" class="btn btn-success">Finalizar</a>
     </form>
+    <div class="container">
+        <hr>
+        {% include 'ventas/detallecompra.html' %}
+    </div>
 </div>
 
 {% endblock %}
