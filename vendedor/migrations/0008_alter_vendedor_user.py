@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='vendedor',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='auth.group'),
+            field=models.ForeignKey(to='auth.user',default=2,on_delete=django.db.models.deletion.CASCADE),
         ),
     ]

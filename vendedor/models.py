@@ -24,7 +24,7 @@ class Vendedor(models.Model):
     direccion = models.CharField(max_length=200,null=True, blank=True)
     correo = models.EmailField(null=False, blank=False)
     turno = models.ForeignKey(Turno, on_delete=models.CASCADE, null=True, blank=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null = True, blank = True)
     
     def __str__(self) -> str:
         return f'{self.name} {self.last_name}'
@@ -45,6 +45,7 @@ class Producto(models.Model):
     stock = models.IntegerField(null=False, blank=False)
     imagen = models.ImageField(null=True, blank= True,upload_to='product_img')
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
+    vendedor = models.ForeignKey(Vendedor,null=True,blank=True, on_delete = models.CASCADE)
 
     def __str__(self):
         return self.nombre

@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView,DetailView,ListView,CreateView,UpdateView,DeleteView
-from vendedor.models import Producto, Caja, Estado, InformeDiario
+from vendedor.models import Producto, Caja, Estado, InformeDiario,Vendedor
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -55,6 +55,12 @@ class ProductoCreateView(PermissionRequiredMixin,CreateView):
     success_url = reverse_lazy('pagina_inventario')
     permission_required = "vendedor.permiso_jefeVentas"
 
+    def form_valid(self,form):
+        vendedor_instance = Vendedor.object.get(user = self.request.user)
+        form.instance.vendedor = vendedor_instance
+        self.object = form.save()
+        response = super().form_valid(form)
+        return response
 
 @method_decorator(login_required, name='dispatch')
 class ProductoUpdateView(PermissionRequiredMixin,UpdateView):
@@ -132,3 +138,6 @@ class CajaUpdateView(PermissionRequiredMixin,UpdateView):
         caja.save()
         return super().form_valid(form)
 
+class Error403(TemplateView):
+    permission_required = "vendedor.permiso_jefeVentas"
+    template_name = 'jefeVentas/errores/error403.html'

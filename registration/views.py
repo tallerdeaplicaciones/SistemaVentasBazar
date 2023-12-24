@@ -28,7 +28,7 @@ def grupo_usuario(request):
         return redirect('vendedor')
     else:
         # Usuario no pertenece a ninguno de los grupos, manejar según tus necesidades
-        return render(request, 'registration/error_usuario.html')
+        return render(request, 'registration/error_404.html')
     
 # incorporamos logout personalizado para 
 # volver a la vista de login cuando hacemos logout   
@@ -43,7 +43,7 @@ class SignUpView(CreateView):
     template_name = 'registration/sign_up.html'
     
     def get_success_url(self):
-        return reverse_lazy('profile')
+        return reverse_lazy('login')
     
     def get_form(self, form_class=None):
         form = super(SignUpView, self).get_form()
@@ -61,17 +61,13 @@ class SignUpView(CreateView):
     
 class ProfileUpdate(UpdateView):
     form_class = VendedorForm
-    success_url = reverse_lazy('pagina_principal')
+    success_url = reverse_lazy('profile')
     template_name = 'registration/profile_form.html'
     
     def get_object(self):
         profile, created = Vendedor.objects.get_or_create(user=self.request.user)
         return profile
 
-    def form_valid(self, form):
-        print(form.cleaned_data)  # Imprime los datos del formulario
-        return super().form_valid(form)
-    
         
 
 

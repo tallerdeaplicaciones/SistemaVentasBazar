@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='vendedor',
             name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='auth.group'),
+            field=models.OneToOneField(default =2,on_delete=django.db.models.deletion.CASCADE, to='auth.user'),
         ),
     ]
