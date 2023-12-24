@@ -92,6 +92,12 @@ class Venta(models.Model):
     def __str__(self) -> str:
         return f'Venta {self.id}'
 
+    # def save(self, *args, **kwargs):
+    #     self.subtotal = sum(detail.precio for detail in self.detallecompra_set.all())
+    #     self.iva = self.subtotal * 0.19 
+    #     self.precio_total = self.subtotal + self.iva
+    #     super().save(*args, **kwargs)
+
 
 class DetalleCompra(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)

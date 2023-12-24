@@ -6,7 +6,8 @@
     <form method="POST" class="form-group">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Finalizar</button>
+        <button type="submit" class="btn btn-success">Seleccionar</button>
+        <a href="{% url 'ventas3' %}" class="btn btn-success">Finalizar</a>
     </form>
 </div>
 

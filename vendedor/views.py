@@ -14,7 +14,7 @@ from decimal import Decimal
 
 @method_decorator(login_required, name='dispatch')
 class VendedorView(PermissionRequiredMixin,View):
-    template_name = 'vendedor/vendedor.html'  # Asegúrate de tener la ruta correcta al template
+    template_name = 'vendedor/vendedor.html' 
     permission_required = "vendedor.permiso_vendedores"
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
@@ -72,7 +72,6 @@ class GenerarVenta2(PermissionRequiredMixin, FormView):
         if not ultima_venta:
             ultima_venta = Venta.objects.create()
 
-
         # Crear una instancia de DetalleCompra
         detalle_compra = DetalleCompra(producto=producto, cantidad=cantidad, precio=producto.precio, venta=ultima_venta)
         detalle_compra.save()
@@ -81,8 +80,9 @@ class GenerarVenta2(PermissionRequiredMixin, FormView):
         self.request.session['venta_previa_id'] = ultima_venta.id
 
         # Redirigir a la vista para crear la venta final
-        return redirect('ventas3')
+        return redirect('ventas2')
 
+# necesito crear la vista para generar la venta final
 
 @method_decorator(login_required, name='dispatch')
 class GenerarVenta3(PermissionRequiredMixin, View):
@@ -90,12 +90,10 @@ class GenerarVenta3(PermissionRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         ultima_venta = Venta.objects.last()
-        detalles_compra = DetalleCompra.objects.filter(venta=ultima_venta).annotate(
-            detalle_subtotal=ExpressionWrapper(F('cantidad') * F('precio'), output_field=DecimalField())
-        )
+        detalles_compra = DetalleCompra.objects.filter(venta=ultima_venta)
 
         # Calcular el subtotal basado en todos los detalles de compra asociados a la venta
-        subtotal = detalles_compra.aggregate(total_subtotal=Sum('detalle_subtotal'))['total_subtotal'] or Decimal(0)
+        subtotal = detalles_compra.aggregate(total=Sum('precio'))['total'] or Decimal(0)
         iva = subtotal * Decimal('0.19')  # Suponiendo un IVA del 19%
         total = subtotal + iva
 
@@ -110,10 +108,14 @@ class GenerarVenta3(PermissionRequiredMixin, View):
         ultima_venta = Venta.objects.last()
         detalles_compra = DetalleCompra.objects.filter(venta=ultima_venta)
 
-        # Calcular el subtotal basado en todos los detalles de compra asociados a la venta
-        subtotal = detalles_compra.aggregate(total=Sum('precio'))['total'] or Decimal(0)
+        subtotal = sum(detalle.precio * detalle.cantidad for detalle in detalles_compra)
         iva = subtotal * Decimal('0.19')  # Suponiendo un IVA del 19%
         total = subtotal + iva
+
+        ultima_venta.subtotal = subtotal
+        ultima_venta.iva = iva 
+        ultima_venta.precio_total = total
+        ultima_venta.save()
 
         if tipo_documento_elegido == '1':
             # Crear el documento tributario para Boleta
