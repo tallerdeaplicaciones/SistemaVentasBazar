@@ -1,7 +1,7 @@
 from django.views.generic.edit import CreateView, FormView
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Venta, DetalleCompra, Producto, InformeDiario
+from .models import Venta, DetalleCompra, Producto, InformeDiario, Caja
 from .forms import VentasForm, DetalleCompraForm
 from django.utils import timezone
 from django.urls import reverse_lazy
@@ -36,10 +36,12 @@ class GenerarVenta1(PermissionRequiredMixin,CreateView):
         # Asignar el vendedor actualmente logueado
         form.instance.vendedor = self.request.user.vendedor
         
-        # Obtener la última caja abierta del vendedor actual
-        caja_abierta = self.request.user.vendedor.caja_set.filter(estado__nombre='Abierto').last()
-        
-        if caja_abierta:
+        # Obtener la caja abierta
+        caja_abierta = Caja.objects.last()
+
+        #Verificar si la caja_abierta tiene estado == "Abierto"
+        if caja_abierta.estado.nombre == "Abierto":
+            # Asignar la caja abierta a la venta
             form.instance.caja = caja_abierta
             form.instance.fecha = timezone.now().date()
             return super().form_valid(form)
