@@ -1,15 +1,20 @@
 from django import forms
 from .models import Vendedor, Venta, DetalleCompra
 from django.forms.models import inlineformset_factory
+from django.contrib.auth.models import Group, AbstractUser,User
 
 class VendedorForm(forms.ModelForm):
     class Meta:
         model = Vendedor
-        fields = ['name', 'last_name', 'user']
+        fields = ['name','last_name']
         widgets = {
             'name': forms.TextInput(attrs={'class':'form-control'}),
-            'last_name': forms.TextInput(attrs={'class':'form-control'}),
-            'user': forms.Select(attrs={'class':'form-control'})
+            'last_name' : forms.TextInput(attrs={'class':'form-control'}),
+            # 'last_name': forms.TextInput(attrs={'class':'form-control'}),
+            # 'email' : forms.EmailInput(attrs={'class':'form-control'}),
+            # 'is_staff' : forms.CheckboxInput(attrs={'class':'form-check-input'}),
+            # 'is_active' : forms.CheckboxInput(attrs={'class':'form-check-input'}),
+            # 'date_joined' : forms.DateTimeInput(attrs={'class':'form-control'})
         }
 
 

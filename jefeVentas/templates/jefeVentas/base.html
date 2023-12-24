@@ -10,9 +10,34 @@
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'tu_estilo.css' %}">
+
     <title>JefeVentas</title>
 </head>
+<style>
+    body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
 
+main {
+    flex: 1;
+}
+
+footer {
+    flex-shrink: 0;
+    height: 70px;
+    background-color: #343a40;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    font-size: 20px;
+    z-index: 4;
+}
+</style>
 <body>
     <header>
         <nav class="navbar navbar-dark bg-dark fixed-top">
@@ -50,13 +75,16 @@
                       <a class="nav-link" href="{% url 'informe_diario'%}">Informe de Ventas</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#informe-tributario">Informe Tributario</a>
+                        <a class="nav-link" href="{% url 'signup' %}">Crear usuarios</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'pagina_inventario' %}">Inventario</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'pagina_caja' %}">Cajas</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="{% url 'error403' %}">Error403</a>
                     </li>
                     </ul>
                     <form class="d-flex mt-3" role="search">
@@ -80,26 +108,13 @@
         <div class="container mb-5">
             <!-- Contenido dinámico -->
             {% block content %}
+            <div id="miBloque" class="miBloque"></div>
             {% endblock %}
         </div>
         
-        </style>
     </main>
     <style>
-    footer {
-        position: absolute;
-        bottom: 1px; /* Ajusta según la distancia que desees del borde inferior */
-        left: 0;
-        right: 0;
-        height: 80px; /* Ajusta según la altura de tu Footer */
-        background-color: #343a40; /* Color de fondo del Footer */
-        color: #ffffff; /* Color del texto */
-        padding: 20px; /* Añade espacio interno al contenido del Footer */
-        text-align: center; /* Centra el contenido del Footer */
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Añade una sombra al Footer */
-        font-size: 20px;
-        z-index: 2;
-    }    
+    
     </style>
     <footer >
         <p>&copy; 2023 Monitos de la Nona - Todos los derechos reservados</p>
