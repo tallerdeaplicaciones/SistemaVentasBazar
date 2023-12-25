@@ -128,6 +128,12 @@
             <div class="col-md-4 col-12">
                 <!-- Este div está a la derecha -->
                 <div class="box h-100 w-40" id="verde">
+                    <h5 class="text-center">Ventas Recientes</h5>
+                    <ul>
+                        {% for venta in ventas_vendedor_caja %}
+                            <li>{{ venta.producto }} - {{ venta.monto }}</li>
+                        {% endfor %}
+                    </ul>
 
                 </div>
             </div>

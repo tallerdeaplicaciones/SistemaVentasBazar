@@ -19,6 +19,27 @@ class VendedorView(PermissionRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
+@method_decorator(login_required, name='dispatch')
+class VentasVendedorCajaView(View):
+    template_name = 'vendedor.html'
+
+    def get(self, request, *args, **kwargs):
+        # Obtén el vendedor actualmente logueado
+        vendedor = request.user.vendedor
+        
+        # Obtén la caja abierta
+        # caja_abierta = Caja.objects.last()
+
+        # Obtén todas las ventas asociadas al vendedor y a la caja
+        ventas_vendedor_caja = Venta.objects.filter(vendedor=vendedor)
+
+        # Pasa las ventas al contexto
+        context = {
+            'ventas_vendedor_caja': ventas_vendedor_caja,
+        }
+
+        return render(request, self.template_name, context)
+
 
 @method_decorator(login_required, name='dispatch')
 class GenerarVenta1(PermissionRequiredMixin,CreateView):
@@ -56,7 +77,7 @@ class RegistrarClienteView(CreateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'ventas/cliente_form.html'
-    success_url = 'ventas1'
+    success_url = reverse_lazy('ventas1')
 
 @method_decorator(login_required, name='dispatch')
 class GenerarVenta2(PermissionRequiredMixin, FormView):
@@ -159,3 +180,4 @@ class GenerarVenta3(PermissionRequiredMixin, View):
             return redirect('vendedor')
         else:
             return HttpResponse('Tipo de documento no válido')
+        

@@ -17,7 +17,7 @@ class VendedorForm(forms.ModelForm):
             # 'date_joined' : forms.DateTimeInput(attrs={'class':'form-control'})
         }
 
-
+# recordar que este forms esta siendo usado para dar la opcion de agregar al cliente a una venta
 class VentasForm(forms.ModelForm):
     class Meta:
         model = Venta
@@ -26,6 +26,16 @@ class VentasForm(forms.ModelForm):
             'fecha': forms.DateInput(attrs={'class':'form-control'}),
             'cliente': forms.Select(attrs={'class':'form-control'}),
         }
+        
+# este form sera para mostrar las ventas asociadas a un vendedor
+
+# class VentaForm(forms.ModelForm):
+#     class Meta:
+#         model = Venta
+#         fields = ['cliente']
+#         widgets = {
+#             'fecha': forms.DateInput(attrs={'class': 'form-control'}),
+#         }
 
 
 # DetalleCompraFormSet = inlineformset_factory(
