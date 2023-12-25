@@ -21,10 +21,12 @@
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Fecha creacion</th>
                     <th>Jefe ventas</th>
-                    <th>Estado</th>
+                    <th>Fecha creacion</th>
                     <th>Fecha termino</th>
+                    <th>Monto inicial</th>
+                    <th>Monto Final</th>
+                    <th>Estado</th>
                     <th>Opciones</th>
                 </tr>
             </thead>
@@ -32,10 +34,12 @@
                 {% for caja in cajas %}
                     <tr>
                         <td>{{ caja.id }}</td>
-                        <td>{{ caja.fecha_creacion }}</td>
                         <td>{{ caja.jefeVentas }}</td>
-                        <td>{{ caja.estado }}</td>
+                        <td>{{ caja.fecha_creacion }}</td>
                         <td>{{ caja.fecha_termino }}</td>
+                        <td>{{ caja.monto_inicial }}</td>
+                        <td>{{ caja.monto_final }}</td>
+                        <td>{{ caja.estado }}</td>
                         <td>
                             <div class="d-flex">
                                         <!--Control del estado de la caja-->

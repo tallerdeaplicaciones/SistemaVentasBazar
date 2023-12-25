@@ -90,7 +90,7 @@ class CajaCreateView(PermissionRequiredMixin,CreateView):
     model= Caja
     form_class = CajaForm
     template_name='jefeventas/caja/actualizar_caja.html'
-    success_url = reverse_lazy('pagina_principal')
+    success_url = reverse_lazy('pagina_caja')
     permission_required = "vendedor.permiso_jefeVentas"
 
 
