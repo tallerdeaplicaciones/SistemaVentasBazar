@@ -59,6 +59,12 @@
     margin-top: 315px;
 }
 
+/* encabezado */
+
+.header-border {
+    border-bottom: 2px solid white;
+}
+
 /* efectos dashboard */
 /* cards */
 

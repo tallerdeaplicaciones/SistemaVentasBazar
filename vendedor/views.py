@@ -1,8 +1,8 @@
 from django.views.generic.edit import CreateView, FormView
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Venta, DetalleCompra, Producto, InformeDiario, Caja
-from .forms import VentasForm, DetalleCompraForm
+from .models import Venta, DetalleCompra, Producto, InformeDiario, Caja, Cliente
+from .forms import VentasForm, DetalleCompraForm, ClienteForm
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -52,6 +52,11 @@ class GenerarVenta1(PermissionRequiredMixin,CreateView):
     def get_success_url(self):
         return reverse_lazy('ventas2')
 
+class RegistrarClienteView(CreateView):
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'ventas/cliente_form.html'
+    success_url = 'ventas1'
 
 @method_decorator(login_required, name='dispatch')
 class GenerarVenta2(PermissionRequiredMixin, FormView):
@@ -62,6 +67,11 @@ class GenerarVenta2(PermissionRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['productos'] = Producto.objects.all()
+        
+        # Agregar la información del detalle de compra
+        ultima_venta = Venta.objects.last()
+        context['detalle_compra'] = DetalleCompra.objects.filter(venta=ultima_venta)
+        
         return context
 
     def form_valid(self, form):
