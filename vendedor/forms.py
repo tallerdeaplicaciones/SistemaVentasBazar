@@ -1,5 +1,5 @@
 from django import forms
-from .models import Vendedor, Venta, DetalleCompra
+from .models import Vendedor, Venta, DetalleCompra, Cliente
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import Group, AbstractUser,User
 
@@ -39,4 +39,23 @@ class DetalleCompraForm(forms.ModelForm):
         widgets = {
             'producto': forms.Select(attrs={'class': 'form-control'}),
             'cantidad': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+        
+# formulario clientes
+
+class ClienteForm(forms.ModelForm):
+    class Meta:
+        model = Cliente
+        fields = '__all__'
+        
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Pedro Ramiro', 'label': 'Nombre', 'icon': 'bi bi-person-gear'}),
+            'apellido': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Poblete', 'label': 'Apellido', 'icon': 'bi bi-person-gear'}),
+            'apellido2': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Alcantara', 'label': 'Apellido2', 'icon': 'bi bi-person-gear'}),
+            'rut': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '18369166-2', 'label': 'Rut', 'icon': 'bi bi-person-gear'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '954575726', 'label': 'Teléfono', 'icon': 'bi bi-person-gear'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Santa María 2001', 'label': 'Dirección', 'icon': 'bi bi-person-gear'}),
+            'giro': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Analista Programador', 'label': 'Trabajo', 'icon': 'bi bi-person-gear'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Santa María 2001', 'label': 'Dirección', 'icon': 'bi bi-person-gear'}),
+            'razon_social': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'PepsiCo, Inc.', 'label': 'Razón social', 'icon': 'bi bi-person-gear'}),
         }

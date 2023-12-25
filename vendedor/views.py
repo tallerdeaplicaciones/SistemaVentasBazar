@@ -1,20 +1,20 @@
 from django.views.generic.edit import CreateView, FormView
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Venta, DetalleCompra, Producto, InformeDiario
-from .forms import VentasForm, DetalleCompraForm
+from .models import Venta, DetalleCompra, Producto, DocumentoTributario, Caja, Cliente
+from .forms import VentasForm, DetalleCompraForm, ClienteForm
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.db.models import F, ExpressionWrapper, DecimalField, Sum
+from django.db.models import Sum
 from decimal import Decimal
 
 @method_decorator(login_required, name='dispatch')
 class VendedorView(PermissionRequiredMixin,View):
-    template_name = 'vendedor/vendedor.html'  # Asegúrate de tener la ruta correcta al template
+    template_name = 'vendedor/vendedor.html' 
     permission_required = "vendedor.permiso_vendedores"
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
@@ -36,10 +36,12 @@ class GenerarVenta1(PermissionRequiredMixin,CreateView):
         # Asignar el vendedor actualmente logueado
         form.instance.vendedor = self.request.user.vendedor
         
-        # Obtener la última caja abierta del vendedor actual
-        caja_abierta = self.request.user.vendedor.caja_set.filter(estado__nombre='Abierto').last()
-        
-        if caja_abierta:
+        # Obtener la caja abierta
+        caja_abierta = Caja.objects.last()
+
+        #Verificar si la caja_abierta tiene estado == "Abierto"
+        if caja_abierta.estado.nombre == "Abierto":
+            # Asignar la caja abierta a la venta
             form.instance.caja = caja_abierta
             form.instance.fecha = timezone.now().date()
             return super().form_valid(form)
@@ -50,6 +52,11 @@ class GenerarVenta1(PermissionRequiredMixin,CreateView):
     def get_success_url(self):
         return reverse_lazy('ventas2')
 
+class RegistrarClienteView(CreateView):
+    model = Cliente
+    form_class = ClienteForm
+    template_name = 'ventas/cliente_form.html'
+    success_url = 'ventas1'
 
 @method_decorator(login_required, name='dispatch')
 class GenerarVenta2(PermissionRequiredMixin, FormView):
@@ -60,6 +67,11 @@ class GenerarVenta2(PermissionRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['productos'] = Producto.objects.all()
+        
+        # Agregar la información del detalle de compra
+        ultima_venta = Venta.objects.last()
+        context['detalle_compra'] = DetalleCompra.objects.filter(venta=ultima_venta)
+        
         return context
 
     def form_valid(self, form):
@@ -72,7 +84,6 @@ class GenerarVenta2(PermissionRequiredMixin, FormView):
         if not ultima_venta:
             ultima_venta = Venta.objects.create()
 
-
         # Crear una instancia de DetalleCompra
         detalle_compra = DetalleCompra(producto=producto, cantidad=cantidad, precio=producto.precio, venta=ultima_venta)
         detalle_compra.save()
@@ -81,8 +92,9 @@ class GenerarVenta2(PermissionRequiredMixin, FormView):
         self.request.session['venta_previa_id'] = ultima_venta.id
 
         # Redirigir a la vista para crear la venta final
-        return redirect('ventas3')
+        return redirect('ventas2')
 
+# necesito crear la vista para generar la venta final
 
 @method_decorator(login_required, name='dispatch')
 class GenerarVenta3(PermissionRequiredMixin, View):
@@ -90,12 +102,10 @@ class GenerarVenta3(PermissionRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         ultima_venta = Venta.objects.last()
-        detalles_compra = DetalleCompra.objects.filter(venta=ultima_venta).annotate(
-            detalle_subtotal=ExpressionWrapper(F('cantidad') * F('precio'), output_field=DecimalField())
-        )
+        detalles_compra = DetalleCompra.objects.filter(venta=ultima_venta)
 
         # Calcular el subtotal basado en todos los detalles de compra asociados a la venta
-        subtotal = detalles_compra.aggregate(total_subtotal=Sum('detalle_subtotal'))['total_subtotal'] or Decimal(0)
+        subtotal = detalles_compra.aggregate(total=Sum('precio'))['total'] or Decimal(0)
         iva = subtotal * Decimal('0.19')  # Suponiendo un IVA del 19%
         total = subtotal + iva
 
@@ -110,14 +120,18 @@ class GenerarVenta3(PermissionRequiredMixin, View):
         ultima_venta = Venta.objects.last()
         detalles_compra = DetalleCompra.objects.filter(venta=ultima_venta)
 
-        # Calcular el subtotal basado en todos los detalles de compra asociados a la venta
-        subtotal = detalles_compra.aggregate(total=Sum('precio'))['total'] or Decimal(0)
+        subtotal = sum(detalle.precio * detalle.cantidad for detalle in detalles_compra)
         iva = subtotal * Decimal('0.19')  # Suponiendo un IVA del 19%
         total = subtotal + iva
 
-        if tipo_documento_elegido == '1':
+        ultima_venta.subtotal = subtotal
+        ultima_venta.iva = iva 
+        ultima_venta.precio_total = total
+        ultima_venta.save()
+
+        if tipo_documento_elegido == '4':
             # Crear el documento tributario para Boleta
-            nuevo_documento_tributario = InformeDiario.objects.create(
+            nuevo_documento_tributario = DocumentoTributario.objects.create(
                 venta=ultima_venta,
                 subtotal=subtotal,
                 iva=iva,
@@ -127,11 +141,13 @@ class GenerarVenta3(PermissionRequiredMixin, View):
                 vendedor=ultima_venta.vendedor
             )
 
+            nuevo_documento_tributario.detalleCompra.set(detalles_compra)
+
             return redirect('vendedor')
-        elif tipo_documento_elegido == '2':
+        elif tipo_documento_elegido == '5':
             # Crear el documento tributario para Factura
             cliente = ultima_venta.cliente
-            nuevo_documento_tributario = InformeDiario.objects.create(
+            nuevo_documento_tributario = DocumentoTributario.objects.create(
                 venta=ultima_venta,
                 subtotal=subtotal,
                 iva=iva,
@@ -141,6 +157,7 @@ class GenerarVenta3(PermissionRequiredMixin, View):
                 vendedor=ultima_venta.vendedor,
                 cliente=cliente
             )
+            nuevo_documento_tributario.detalleCompra.set(detalles_compra)
 
             return redirect('vendedor')
         else:
