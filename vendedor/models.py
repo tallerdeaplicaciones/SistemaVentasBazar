@@ -45,8 +45,7 @@ class Producto(models.Model):
     stock = models.IntegerField(null=False, blank=False)
     imagen = models.ImageField(null=True, blank= True,upload_to='product_img')
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-    vendedor = models.ForeignKey(Vendedor,null=True,blank=True, on_delete = models.CASCADE)
-
+    
     def __str__(self):
         return self.nombre
 
