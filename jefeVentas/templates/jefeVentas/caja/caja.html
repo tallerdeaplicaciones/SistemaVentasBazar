@@ -10,7 +10,7 @@
             <a class="btn btn-success me-2" href="{% url 'crear_caja' %}">
                 <i class="bi bi-plus-circle"></i> Agregar Caja
             </a>
-            <a class="btn btn-light me-2" href="{% url 'pagina_inventario' %}">
+            <a class="btn btn-light me-2" href="{% url 'pagina_caja' %}">
                 <i class="bi bi-arrow-repeat"></i> Actualizar
             </a>
         </div>
@@ -52,12 +52,6 @@
                                 
                                 <a class="btn btn-dark me-2" href="{% url 'pagina_caja_detail' caja.id %}">
                                     <i class="bi bi-search"></i> Detalles
-                                </a>
-                                <a class="btn btn-secondary me-2" href="#">
-                                    <i class="bi bi-pencil-square"></i> Editar
-                                </a>
-                                <a class="btn btn-light" href="#">
-                                    <i class="bi bi-trash"></i> Eliminar
                                 </a>
                             </div>
                         </td>
