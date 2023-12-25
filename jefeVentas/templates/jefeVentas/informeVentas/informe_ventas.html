@@ -1,20 +1,34 @@
 {% extends 'jefeVentas/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1>Informe de Ventas</h1>
-    <!-- aca incluir filtro por fechas -->
 
+<style>
+    /* Estilos para el contenedor de la tabla, con espacio adicional en el fondo */
+    .table-responsive {
+        margin-bottom: 80px; /* Espacio extra para evitar que la tabla toque el footer */
+        overflow-y: auto; /* Permite desplazamiento vertical si es necesario */
+        /* Ajusta la altura máxima según tus necesidades o la altura del viewport */
+        max-height: 75vh;   
+    }
+</style>
+
+
+<div class="container mt-4">
+    {% include 'jefeVentas/informeVentas/hola.html' %}
+
+    {% if filtro_aplicado %}
+    <h1>Informe de Ventas</h1>
     <div class="table-responsive">
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Nro</th>
                     <th>Fecha</th>
+                    <th>Vendedor</th>
                     <th>Cliente</th>
-                    <th>Producto y Cantidad</th>
-                    <th>Subtotal</th>
-                    <th>IVA</th>
+                    <!--<th>Producto y Cantidad</th>-->
+                    <!--<th>Subtotal</th>-->
+                    <!--<th>IVA</th>-->
                     <th>Total</th>
                     <th>Tipo de Documento</th>
                 </tr>
@@ -24,14 +38,10 @@
                 <tr>
                     <td>{{ venta.id }}</td>
                     <td>{{ venta.fecha }}</td>
+                    <td>{{ venta.vendedor.name }} {{ venta.vendedor.last_name }}</td>
                     <td>{{ venta.cliente }}</td>
-                    <td>
-                        {% for detalle in venta.detallecompra_set.all %}
-                            {{ detalle.producto.nombre }} (Cantidad: {{ detalle.cantidad }})<br>
-                        {% endfor %}
-                    </td>
-                    <td>{{ venta.subtotal }}</td>
-                    <td>{{ venta.iva }}</td>
+                    <!-- <td>{{ venta.subtotal }}</td>-->
+                    <!--<td>{{ venta.iva }}</td>-->
                     <td>{{ venta.precio_total }}</td>
                     <td>{{ venta.tipo }}</td>
                 </tr>
@@ -43,6 +53,7 @@
             </tbody>
         </table>
     </div>
+    {% endif %}
 </div>
 {% endblock %}
 

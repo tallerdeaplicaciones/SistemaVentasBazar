@@ -1,11 +1,16 @@
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView,DetailView,ListView,CreateView,UpdateView,DeleteView
-from vendedor.models import Producto, Caja, Estado, InformeDiario
+from vendedor.models import Producto, Caja, Estado, InformeDiario, TipoDocumentoTributario, Vendedor
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
+from xhtml2pdf import pisa
+
+
+
 
 
 # Create your views here.
@@ -22,6 +27,8 @@ class Pagina_principal(PermissionRequiredMixin,TemplateView):
         context['cajas'] = cajas
         context['caja_abierta'] = caja_abierta
         return context
+    
+    
 
 #Vista para el invetario.
 @method_decorator(login_required, name='dispatch')
@@ -46,6 +53,43 @@ class Pagina_informe_diario(PermissionRequiredMixin,ListView):
     template_name = "jefeVentas/informeVentas/informe_ventas.html"
     context_object_name = 'ventas'
     permission_required = "vendedor.permiso_jefeVentas"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        vendedor_id = self.request.GET.get('vendedor')
+        tipo_documento_id = self.request.GET.get('tipo_documento')
+        fecha_inicio = self.request.GET.get('fecha_inicio')
+        fecha_fin = self.request.GET.get('fecha_fin')
+
+        if vendedor_id:
+            queryset = queryset.filter(vendedor_id=vendedor_id) if vendedor_id != '' else queryset
+
+        if tipo_documento_id:
+            queryset = queryset.filter(tipo_id=tipo_documento_id) if tipo_documento_id != '' else queryset
+
+        if fecha_inicio and fecha_fin:
+            fecha_inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+            fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d')
+            queryset = queryset.filter(fecha__range=(fecha_inicio, fecha_fin))
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['vendedores'] = Vendedor.objects.all()
+        context['tipos_documento'] = TipoDocumentoTributario.objects.all()
+
+        # Verifica si algún parámetro de filtro está presente
+        context['filtro_aplicado'] = any([
+            self.request.GET.get('vendedor'),
+            self.request.GET.get('tipo_documento'),
+            self.request.GET.get('fecha_inicio'),
+            self.request.GET.get('fecha_fin')
+        ])
+        
+        return context
+    
+    
 
 @method_decorator(login_required, name='dispatch')
 class ProductoCreateView(PermissionRequiredMixin,CreateView):
@@ -131,4 +175,3 @@ class CajaUpdateView(PermissionRequiredMixin,UpdateView):
             caja.fecha_termino = None
         caja.save()
         return super().form_valid(form)
-
