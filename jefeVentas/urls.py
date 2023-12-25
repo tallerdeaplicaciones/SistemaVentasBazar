@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import Pagina_principal,Pagina_inventario,Pagina_caja,Pagina_informe_diario
-from .views import CajaDetailView,Error403
+from .views import CajaDetailView
 from .views import ProductoCreateView,ProductoDeleteView,ProductoUpdateView, ProductoDetailView,CajaCreateView,CajaUpdateView
 urlpatterns = [
     path('', Pagina_principal.as_view(), name='pagina_principal'),
@@ -14,5 +14,4 @@ urlpatterns = [
     path('caja/', Pagina_caja.as_view(), name='pagina_caja'),
     path('caja/detail/<int:pk>/', CajaDetailView.as_view(), name='pagina_caja_detail'),
     path('informeDiario/',Pagina_informe_diario.as_view(), name='informe_diario'),
-    path('error', Error403.as_view(), name='error403')
 ]

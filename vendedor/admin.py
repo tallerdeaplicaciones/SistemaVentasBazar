@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Turno, Vendedor, Cliente, Venta, DetalleCompra, TipoDocumentoTributario, InformeDiario,Cargo
+from .models import Turno, Vendedor, Cliente, Venta, DetalleCompra, TipoDocumentoTributario, DocumentoTributario
 # Register your models here.
 
 class TurnoAdmin(admin.ModelAdmin):
@@ -41,15 +41,15 @@ class DetalleCompraAdmin(admin.ModelAdmin):
 admin.site.register(DetalleCompra, DetalleCompraAdmin)
 
 class TipoDocumentoTributarioAdmin(admin.ModelAdmin):
-    list_display = ['nombre']  # Muestra el nombre del tipo de documento
+    list_display = ['id','nombre']  # Muestra el nombre del tipo de documento
     search_fields = ['nombre']  # Habilita la búsqueda por nombre
 
 admin.site.register(TipoDocumentoTributario, TipoDocumentoTributarioAdmin)
 
-class InformeDiarioAdmin(admin.ModelAdmin):
+class DocumentoTributarioAdmin(admin.ModelAdmin):
     list_display = ['fecha', 'subtotal', 'iva', 'precio_total', 'tipo', 'vendedor', 'venta', 'cliente']  # Campos a mostrar
     list_filter = ['fecha', 'tipo', 'vendedor', 'venta', 'cliente']  # Filtros para búsqueda
     search_fields = ['fecha', 'tipo__nombre', 'vendedor__name', 'vendedor__last_name', 'venta__fecha', 'cliente__nombre']  # Búsqueda por diferentes criterios
     raw_id_fields = ['tipo', 'vendedor', 'venta', 'cliente']  # Facilita la selección de relaciones
 
-admin.site.register(InformeDiario, InformeDiarioAdmin)
+admin.site.register(DocumentoTributario, DocumentoTributarioAdmin)

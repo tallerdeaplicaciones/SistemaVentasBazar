@@ -1,15 +1,15 @@
 from django.views.generic.edit import CreateView, FormView
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Venta, DetalleCompra, Producto, InformeDiario, Caja, Cliente
+from .models import Venta, DetalleCompra, Producto, DocumentoTributario, Caja, Cliente
 from .forms import VentasForm, DetalleCompraForm, ClienteForm
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.db.models import F, ExpressionWrapper, DecimalField, Sum
+from django.db.models import Sum
 from decimal import Decimal
 
 @method_decorator(login_required, name='dispatch')
@@ -150,9 +150,9 @@ class GenerarVenta3(PermissionRequiredMixin, View):
         ultima_venta.precio_total = total
         ultima_venta.save()
 
-        if tipo_documento_elegido == '1':
+        if tipo_documento_elegido == '4':
             # Crear el documento tributario para Boleta
-            nuevo_documento_tributario = InformeDiario.objects.create(
+            nuevo_documento_tributario = DocumentoTributario.objects.create(
                 venta=ultima_venta,
                 subtotal=subtotal,
                 iva=iva,
@@ -162,11 +162,13 @@ class GenerarVenta3(PermissionRequiredMixin, View):
                 vendedor=ultima_venta.vendedor
             )
 
+            nuevo_documento_tributario.detalleCompra.set(detalles_compra)
+
             return redirect('vendedor')
-        elif tipo_documento_elegido == '2':
+        elif tipo_documento_elegido == '5':
             # Crear el documento tributario para Factura
             cliente = ultima_venta.cliente
-            nuevo_documento_tributario = InformeDiario.objects.create(
+            nuevo_documento_tributario = DocumentoTributario.objects.create(
                 venta=ultima_venta,
                 subtotal=subtotal,
                 iva=iva,
@@ -176,6 +178,7 @@ class GenerarVenta3(PermissionRequiredMixin, View):
                 vendedor=ultima_venta.vendedor,
                 cliente=cliente
             )
+            nuevo_documento_tributario.detalleCompra.set(detalles_compra)
 
             return redirect('vendedor')
         else:

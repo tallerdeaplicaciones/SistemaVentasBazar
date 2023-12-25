@@ -60,9 +60,11 @@ class Estado(models.Model):
 class Caja(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     jefeVentas = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
-    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, default="Abierto")
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
     fecha_termino = models.DateTimeField(null=True, blank=True)
-
+    monto_inicial = models.IntegerField(null=False, blank=False, default=0)
+    monto_final = models.IntegerField(null=True, blank=True)
+    
     def __str__(self):
         return f'Caja {self.id}'
 
@@ -75,7 +77,6 @@ class Cliente(models.Model):
     telefono = models.CharField(max_length=15,null=True, blank=True)
     direccion = models.CharField(max_length=200,null=True, blank=True)
     giro = models.CharField(max_length=200,null=True, blank=True)
-    direccion = models.CharField(max_length=200,null=True, blank=True)
     razon_social = models.CharField(max_length=200,null=True, blank=True)
     
     def __str__(self) -> str:
@@ -84,6 +85,8 @@ class Cliente(models.Model):
 
 class Venta(models.Model):
     fecha = models.DateField(null=False, blank=False)
+    monto_pagado = models.IntegerField(null=True, blank=True)
+    vuelto = models.IntegerField(null=True, blank=True)
     subtotal = models.IntegerField(null=True, blank=True)
     iva = models.FloatField(null=True, blank=True)
     precio_total = models.IntegerField(null=True, blank=True)
@@ -112,7 +115,7 @@ class TipoDocumentoTributario(models.Model):
         return self.nombre
 
 
-class InformeDiario(models.Model):
+class DocumentoTributario(models.Model):
     fecha = models.DateField(null=False, blank=False)
     subtotal = models.IntegerField(null=False, blank=False)
     iva = models.FloatField(null=False, blank=False)
@@ -121,6 +124,7 @@ class InformeDiario(models.Model):
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
     venta = models.ForeignKey(Venta, on_delete=models.CASCADE)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
+    detalleCompra = models.ManyToManyField(DetalleCompra)
 
     def __str__(self) -> str:
         return f'Documento Tributario {self.id}'
