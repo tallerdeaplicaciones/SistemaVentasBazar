@@ -4,17 +4,20 @@ from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import Group, AbstractUser,User
 
 class VendedorForm(forms.ModelForm):
+    username = forms.CharField(max_length=150)
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
     class Meta:
         model = Vendedor
-        fields = ['name','last_name']
+        fields = ['name', 'last_name', 'fecha_nac', 'telefono', 'direccion', 'correo', 'turno']
         widgets = {
-            'name': forms.TextInput(attrs={'class':'form-control'}),
-            'last_name' : forms.TextInput(attrs={'class':'form-control'}),
-            # 'last_name': forms.TextInput(attrs={'class':'form-control'}),
-            # 'email' : forms.EmailInput(attrs={'class':'form-control'}),
-            # 'is_staff' : forms.CheckboxInput(attrs={'class':'form-check-input'}),
-            # 'is_active' : forms.CheckboxInput(attrs={'class':'form-check-input'}),
-            # 'date_joined' : forms.DateTimeInput(attrs={'class':'form-control'})
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'fecha_nac': forms.DateInput(attrs={'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control'}),
+            'correo': forms.EmailInput(attrs={'class': 'form-control'}),
+            'turno': forms.Select(attrs={'class': 'form-control'}),
         }
 
 # recordar que este forms esta siendo usado para dar la opcion de agregar al cliente a una venta
