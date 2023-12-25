@@ -41,7 +41,7 @@ class DetalleCompraAdmin(admin.ModelAdmin):
 admin.site.register(DetalleCompra, DetalleCompraAdmin)
 
 class TipoDocumentoTributarioAdmin(admin.ModelAdmin):
-    list_display = ['nombre']  # Muestra el nombre del tipo de documento
+    list_display = ['id','nombre']  # Muestra el nombre del tipo de documento
     search_fields = ['nombre']  # Habilita la búsqueda por nombre
 
 admin.site.register(TipoDocumentoTributario, TipoDocumentoTributarioAdmin)

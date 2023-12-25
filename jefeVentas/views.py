@@ -59,12 +59,6 @@ class ProductoCreateView(PermissionRequiredMixin,CreateView):
     success_url = reverse_lazy('pagina_inventario')
     permission_required = "vendedor.permiso_jefeVentas"
 
-    def form_valid(self,form):
-        vendedor_instance = Vendedor.object.get(user = self.request.user)
-        form.instance.vendedor = vendedor_instance
-        self.object = form.save()
-        response = super().form_valid(form)
-        return response
 
 @method_decorator(login_required, name='dispatch')
 class ProductoUpdateView(PermissionRequiredMixin,UpdateView):

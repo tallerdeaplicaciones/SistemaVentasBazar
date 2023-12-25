@@ -129,7 +129,7 @@ class GenerarVenta3(PermissionRequiredMixin, View):
         ultima_venta.precio_total = total
         ultima_venta.save()
 
-        if tipo_documento_elegido == '1':
+        if tipo_documento_elegido == '4':
             # Crear el documento tributario para Boleta
             nuevo_documento_tributario = DocumentoTributario.objects.create(
                 venta=ultima_venta,
@@ -141,8 +141,10 @@ class GenerarVenta3(PermissionRequiredMixin, View):
                 vendedor=ultima_venta.vendedor
             )
 
+            nuevo_documento_tributario.detalleCompra.set(detalles_compra)
+
             return redirect('vendedor')
-        elif tipo_documento_elegido == '2':
+        elif tipo_documento_elegido == '5':
             # Crear el documento tributario para Factura
             cliente = ultima_venta.cliente
             nuevo_documento_tributario = DocumentoTributario.objects.create(
@@ -155,6 +157,7 @@ class GenerarVenta3(PermissionRequiredMixin, View):
                 vendedor=ultima_venta.vendedor,
                 cliente=cliente
             )
+            nuevo_documento_tributario.detalleCompra.set(detalles_compra)
 
             return redirect('vendedor')
         else:
