@@ -62,7 +62,9 @@ class Caja(models.Model):
     jefeVentas = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
     estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
     fecha_termino = models.DateTimeField(null=True, blank=True)
-
+    monto_inicial = models.IntegerField(null=False, blank=False, default=0)
+    monto_final = models.IntegerField(null=True, blank=True)
+    
     def __str__(self):
         return f'Caja {self.id}'
 
