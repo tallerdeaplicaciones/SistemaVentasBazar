@@ -1,0 +1,26 @@
+{% extends 'vendedor/base.html' %}
+{% block encabezado %}Registrar Nuevo Cliente{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card col-7 mx-auto mb-4">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-4">
+                Ingrese todos los datos!
+            </h5>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">
+                            <i class="{{ field.field.widget.attrs.icon }}"></i> {{ field.field.widget.attrs.label }}
+                        </label>
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Registrar Cliente</button>
+                <a href="{% url 'ventas1' %}" class="btn btn-secondary">Volver</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

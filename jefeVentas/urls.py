@@ -13,5 +13,5 @@ urlpatterns = [
     path('caja/editar/<int:pk>/', CajaUpdateView.as_view(), name='actualizar_estado_caja'),
     path('caja/', Pagina_caja.as_view(), name='pagina_caja'),
     path('caja/detail/<int:pk>/', CajaDetailView.as_view(), name='pagina_caja_detail'),
-    path('informeDiario/',Pagina_informe_diario.as_view(), name='informe_diario')
+    path('informeDiario/',Pagina_informe_diario.as_view(), name='informe_diario'),
 ]

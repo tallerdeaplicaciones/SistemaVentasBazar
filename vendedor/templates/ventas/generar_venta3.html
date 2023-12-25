@@ -1,15 +1,18 @@
-{% extends 'ventas/base_ventas.html' %}
+{% extends 'vendedor/base.html' %}
+{% block encabezado %} Generar Documento {% endblock %}
 {% block content %}
 <div class="container">
-    <h3>Seleccionar Tipo de Documento Tributario</h3>
+    <h3 class="text-center">Seleccionar Tipo de Documento Tributario</h3>
+    
     <form method="post">
         {% csrf_token %}
         <label  for="tipo_documento">Selecciona el tipo de documento:</label>
         <select class="form-control mb-4" name="tipo_documento" id="tipo_documento">
-            <option value="1">Boleta</option>
-            <option value="2">Factura</option>
+            <option value="4">Boleta</option>
+            <option value="5">Factura</option>
         </select>
         <button class="btn btn-secondary" type="submit">Generar Documento</button>
     </form>
+    
 </div>
 {% endblock %}

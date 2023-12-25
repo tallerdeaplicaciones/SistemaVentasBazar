@@ -28,7 +28,7 @@ def grupo_usuario(request):
         return redirect('vendedor')
     else:
         # Usuario no pertenece a ninguno de los grupos, manejar según tus necesidades
-        return render(request, 'registration/error_usuario.html')
+        return render(request, 'registration/error_404.html')
     
 # incorporamos logout personalizado para 
 # volver a la vista de login cuando hacemos logout   
@@ -53,6 +53,11 @@ class SignUpView(CreateView):
         form.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'form-control'})
 
         return form
+    # def form_valid(self, form):
+    #     response = super().form_valid(form)
+    #     user = self.object
+
+        
     
 class ProfileUpdate(UpdateView):
     form_class = VendedorForm
@@ -60,8 +65,10 @@ class ProfileUpdate(UpdateView):
     template_name = 'registration/profile_form.html'
     
     def get_object(self):
-        profile, create = Vendedor.objects.get_or_create(user = self.request.user)
+        profile, created = Vendedor.objects.get_or_create(user=self.request.user)
         return profile
+
+        
 
 
 

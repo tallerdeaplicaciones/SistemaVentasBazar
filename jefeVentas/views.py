@@ -1,16 +1,27 @@
+from typing import Any
+from django.db.models.base import Model as Model
+from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView,DetailView,ListView,CreateView,UpdateView,DeleteView
+<<<<<<< HEAD
 from vendedor.models import Producto, Caja, Estado, InformeDiario, TipoDocumentoTributario, Vendedor
+=======
+from vendedor.models import Producto, Caja, Estado, DocumentoTributario,Vendedor
+>>>>>>> c7e1a6310ccdd7ecc8c146f1f2c842969d2fbb27
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+<<<<<<< HEAD
 from datetime import datetime
 from xhtml2pdf import pisa
 
 
 
+=======
+from django.http import HttpResponse, Http404
+>>>>>>> c7e1a6310ccdd7ecc8c146f1f2c842969d2fbb27
 
 
 # Create your views here.
@@ -49,7 +60,7 @@ class Pagina_caja(PermissionRequiredMixin,ListView):
 #Vista para los informes de ventas diarios.
 @method_decorator(login_required, name='dispatch')
 class Pagina_informe_diario(PermissionRequiredMixin,ListView):
-    model = InformeDiario
+    model = DocumentoTributario
     template_name = "jefeVentas/informeVentas/informe_ventas.html"
     context_object_name = 'ventas'
     permission_required = "vendedor.permiso_jefeVentas"
@@ -154,6 +165,13 @@ class CajaDetailView(PermissionRequiredMixin,DetailView):
     context_object_name = 'cajas'
     permission_required = "vendedor.permiso_jefeVentas"
     
+    def get_object(self, queryset: QuerySet[Any] | None = ...) -> Model:
+        
+        caja = super(CajaDetailView, self).get_object(queryset)
+
+        if caja.jefeVentas != self.request.user.vendedor:
+            raise Http404("No tienes permiso para ver esta caja")
+        return caja
 
 
 @method_decorator(login_required, name='dispatch')

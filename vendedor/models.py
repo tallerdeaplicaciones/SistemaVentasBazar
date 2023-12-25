@@ -12,6 +12,8 @@ class Turno(models.Model):
     def __str__(self) -> str:
         return self.nombre
 
+class Cargo(models.Model):
+    user = models.CharField(max_length=50, blank=False, null=False)
 
 class Vendedor(models.Model):
     name = models.CharField(max_length=200,null=False, blank=False)
@@ -22,7 +24,7 @@ class Vendedor(models.Model):
     direccion = models.CharField(max_length=200,null=True, blank=True)
     correo = models.EmailField(null=False, blank=False)
     turno = models.ForeignKey(Turno, on_delete=models.CASCADE, null=True, blank=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null = True, blank = True)
     
     def __str__(self) -> str:
         return f'{self.name} {self.last_name}'
@@ -43,7 +45,7 @@ class Producto(models.Model):
     stock = models.IntegerField(null=False, blank=False)
     imagen = models.ImageField(null=True, blank= True,upload_to='product_img')
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-
+    
     def __str__(self):
         return self.nombre
 
@@ -58,7 +60,7 @@ class Estado(models.Model):
 class Caja(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     jefeVentas = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
-    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, default="Abierto")
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
     fecha_termino = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -73,7 +75,6 @@ class Cliente(models.Model):
     telefono = models.CharField(max_length=15,null=True, blank=True)
     direccion = models.CharField(max_length=200,null=True, blank=True)
     giro = models.CharField(max_length=200,null=True, blank=True)
-    direccion = models.CharField(max_length=200,null=True, blank=True)
     razon_social = models.CharField(max_length=200,null=True, blank=True)
     
     def __str__(self) -> str:
@@ -82,6 +83,8 @@ class Cliente(models.Model):
 
 class Venta(models.Model):
     fecha = models.DateField(null=False, blank=False)
+    monto_pagado = models.IntegerField(null=True, blank=True)
+    vuelto = models.IntegerField(null=True, blank=True)
     subtotal = models.IntegerField(null=True, blank=True)
     iva = models.FloatField(null=True, blank=True)
     precio_total = models.IntegerField(null=True, blank=True)
@@ -110,7 +113,7 @@ class TipoDocumentoTributario(models.Model):
         return self.nombre
 
 
-class InformeDiario(models.Model):
+class DocumentoTributario(models.Model):
     fecha = models.DateField(null=False, blank=False)
     subtotal = models.IntegerField(null=False, blank=False)
     iva = models.FloatField(null=False, blank=False)
@@ -119,6 +122,7 @@ class InformeDiario(models.Model):
     vendedor = models.ForeignKey(Vendedor, on_delete=models.CASCADE)
     venta = models.ForeignKey(Venta, on_delete=models.CASCADE)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True, blank=True)
+    detalleCompra = models.ManyToManyField(DetalleCompra)
 
     def __str__(self) -> str:
         return f'Documento Tributario {self.id}'
