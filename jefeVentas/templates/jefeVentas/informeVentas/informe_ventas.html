@@ -40,10 +40,19 @@
                     <td>{{ venta.fecha }}</td>
                     <td>{{ venta.vendedor.name }} {{ venta.vendedor.last_name }}</td>
                     <td>{{ venta.cliente }}</td>
-                    <!-- <td>{{ venta.subtotal }}</td>-->
-                    <!--<td>{{ venta.iva }}</td>-->
                     <td>{{ venta.precio_total }}</td>
-                    <td>{{ venta.tipo }}</td>
+                    <td>
+                        {% for documento in venta.documentotributario_set.all %}
+                            <br>
+                            {% if documento.tipo.nombre == "Factura" %}
+                                <!-- Botón para descargar el PDF de la factura -->
+                                <a href="{% url 'factura_pdf' documento.id %}" class="btn btn-primary">Descargar Factura</a>
+                            {% elif documento.tipo.nombre == "Boleta" %}
+                                <!-- Botón para descargar el PDF de la boleta -->
+                                <a href="{% url 'boleta_pdf' documento.id %}" class="btn btn-primary">Descargar Boleta</a>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>

@@ -11,7 +11,7 @@ urlpatterns = [
     path('logout/', CustomLogoutView.as_view(), name='logout'),
     path('accounts/', include('registration.urls')),  
     path('vendedor/', include('vendedor.urls')),
-    path('jefeVentas/', include('jefeVentas.urls')),
+    path('jefeVentas/', include('jefeVentas.urls'))
 ]
 
 if settings.DEBUG:
