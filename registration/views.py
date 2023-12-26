@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from vendedor.models import Vendedor
 from vendedor.forms import VendedorForm
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 
@@ -48,67 +49,28 @@ class CustomLogoutView(LogoutView):
 class VendedorCreateView(CreateView):
     model = Vendedor
     form_class = VendedorForm
-    success_url = 'pagina_principal'  # Redirección tras la creación exitosa
+    template_name = 'jefeVentas/vendedores/formulario.html'
+    success_url = reverse_lazy('pagina_principal')  # Redirección tras la creación exitosa
 
     def form_valid(self, form):
-        user = User.objects.create_user(
-            username=form.cleaned_data['username'],
-            password=form.cleaned_data['password1'],
-            email=form.cleaned_data['correo'],
-        )
-        form.instance.user = user  # Asigna el usuario al objeto Vendedor
+        form.instance.user.groups.add(Group.objects.get(name='vendedores'))  # Asigna el usuario al objeto Vendedor
         return super().form_valid(form)
 
-# class VendedorCreateView(UpdateView):
-#     form_class = VendedorForm
-#     success_url = reverse_lazy('jefeVentas')
-#     template_name = 'registration/profile_form.html'
-
-#     def get_object(self):
-#         return Vendedor()  # Crea un objeto Vendedor vacío
-
-#     @login_required
-#     @permission_required("vendedor.permiso_jefeVentas")
-#     def post(self, request, *args, **kwargs):
-#         form = VendedorForm(request.POST)
-#         if form.is_valid():
-#             user = User.objects.create_user(
-#                 username=form.cleaned_data['username'],
-#                 password=form.cleaned_data['password1'],
-#                 email=form.cleaned_data['email'],
-#             )
-#             vendedor = Vendedor.objects.create(
-#                 user=user,
-#                 nombre=form.cleaned_data['nombre'],
-#                 apellido=form.cleaned_data['apellido'],
-#                 fecha_nacimiento=form.cleaned_data['fecha_nacimiento'],
-#                 telefono=form.cleaned_data['telefono'],
-#                 direccion=form.cleaned_data['direccion'],
-#             )
-#             return redirect('jefeVentas')  # Redirigir a la vista principal de jefe de ventas
-#         else:
-#             return self.render_to_response(self.get_context_data(form=form))
-
-# class SignUpView(CreateView):
-#     form_class = UserCreationForm
-#     template_name = 'registration/sign_up.html'
+class SignUpView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'registration/sign_up.html'
     
-#     def get_success_url(self):
-#         return reverse_lazy('login')
+    def get_success_url(self):
+        return reverse_lazy('login')
     
-#     def get_form(self, form_class=None):
-#         form = super(SignUpView, self).get_form()
-
-#         form.fields['username'].widget = forms.TextInput(attrs={'class': 'form-control'})
-#         form.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'form-control'})
-#         form.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'form-control'})
-
-#         return form
-#     def form_valid(self, form):
-#         response = super().form_valid(form)
-#         user = self.object
-
+    def get_form(self, form_class = None):
+        form = super(SignUpView, self).get_form()
         
+        form.fields['username'].widget = forms.TextInput(attrs={'class':'form-control'})
+        form.fields['password1'].widget = forms.PasswordInput(attrs={'class':'form-control'})
+        form.fields['password2'].widget = forms.PasswordInput(attrs={'class':'form-control'})
+        
+        return form        
     
 # class ProfileUpdate(UpdateView):
 #     form_class = VendedorForm
