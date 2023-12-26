@@ -13,25 +13,17 @@ from django.db.models import Sum
 from decimal import Decimal
 from django.contrib import messages
 
+
 @method_decorator(login_required, name='dispatch')
-class VendedorView(PermissionRequiredMixin,View):
+class VendedorView(PermissionRequiredMixin, View):
     template_name = 'vendedor/vendedor.html' 
     permission_required = "vendedor.permiso_vendedores"
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
-
-@method_decorator(login_required, name='dispatch')
-class VentasVendedorCajaView(View):
-    template_name = 'vendedor.html'
-
+    
     def get(self, request, *args, **kwargs):
         # Obtén el vendedor actualmente logueado
         vendedor = request.user.vendedor
         
-        # Obtén la caja abierta
-        # caja_abierta = Caja.objects.last()
-
-        # Obtén todas las ventas asociadas al vendedor y a la caja
+        # Obtén todas las ventas asociadas al vendedor
         ventas_vendedor_caja = Venta.objects.filter(vendedor=vendedor)
 
         # Pasa las ventas al contexto
@@ -40,6 +32,34 @@ class VentasVendedorCajaView(View):
         }
 
         return render(request, self.template_name, context)
+    
+# @method_decorator(login_required, name='dispatch')
+# class VendedorView(PermissionRequiredMixin,View):
+#     template_name = 'vendedor/vendedor.html' 
+#     permission_required = "vendedor.permiso_vendedores"
+#     def get(self, request, *args, **kwargs):
+#         return render(request, self.template_name)
+
+# @method_decorator(login_required, name='dispatch')
+# class VentasVendedorCajaView(View):
+#     template_name = 'ventas_vendedor.html'
+
+#     def get(self, request, *args, **kwargs):
+#         # Obtén el vendedor actualmente logueado
+#         vendedor = request.user.vendedor
+        
+#         # Obtén la caja abierta
+#         # caja_abierta = Caja.objects.last()
+
+#         # Obtén todas las ventas asociadas al vendedor y a la caja
+#         ventas_vendedor_caja = Venta.objects.filter(vendedor=vendedor)
+
+#         # Pasa las ventas al contexto
+#         context = {
+#             'ventas_vendedor_caja': ventas_vendedor_caja,
+#         }
+
+#         return render(request, self.template_name, context)
 
 
 @method_decorator(login_required, name='dispatch')
