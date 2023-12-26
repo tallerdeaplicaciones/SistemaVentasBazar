@@ -1,3 +1,4 @@
+from django.forms.models import BaseModelForm
 from django.views.generic.edit import CreateView, FormView
 from django.shortcuts import render, redirect
 from django.views import View
@@ -6,7 +7,7 @@ from .forms import VentasForm, DetalleCompraForm, ClienteForm
 from django.utils import timezone
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponse, Http404, HttpResponseNotFound
+from django.http import HttpResponse, Http404, HttpResponseNotFound, JsonResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
@@ -109,14 +110,37 @@ class RegistrarClienteView(CreateView):
     success_url = reverse_lazy('ventas1')
     
     def form_valid(self, form):
-        try:
-            messages.success(self.request, 'Cliente creado exitosamente', extra_tags='success')
-            return super().form_valid(form)
-        except Exception as e:
-            # Manejar cualquier excepción o error que pueda ocurrir
-            messages.error(self.request, f'Error al crear el cliente: {e}', extra_tags='danger')
-            return super().form_invalid(form)
         
+        cliente = form.save(commit=False)
+        cliente.save()
+        
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Si es una solicitud AJAX, prepara la respuesta JSON.
+            data = {
+                'status': 'success',
+                'message': 'El cliente se ha creado con éxito.'
+            }
+            # Devuelve una respuesta JSON con el estado y el mensaje.
+            return JsonResponse(data)
+        else:
+            # Si no es una solicitud AJAX, sigue el flujo normal de redirección.
+            return super().form_valid(form)
+        
+    def form_invalid(self, form):
+        # Este método se llama si el formulario enviado no es válido.
+        # Comprueba si la petición es una solicitud AJAX.
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Si es una solicitud AJAX, prepara la respuesta JSON con los errores.
+            data = {
+                'status': 'error',
+                'message': 'El formulario contiene errores.',
+                'errors': form.errors.as_json()  # Convierte los errores del formulario a JSON.
+            }
+            # Devuelve una respuesta JSON con el estado de error y los mensajes correspondientes.
+            return JsonResponse(data, status=400)
+        else:
+            # Si no es una solicitud AJAX, sigue el flujo normal de mostrar el formulario con errores.
+            return super().form_invalid(form)
 
 @method_decorator(login_required, name='dispatch')
 class GenerarVenta2(PermissionRequiredMixin, FormView):

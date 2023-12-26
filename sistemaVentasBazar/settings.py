@@ -136,3 +136,5 @@ MEDIA_URL = '/media/'
 
 # LOGIN_REDIRECT_URL = 'vendedor'
 # LOGOUT_REDIRECT_URL = 'login'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
