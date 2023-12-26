@@ -14,7 +14,7 @@
 
 
 <div class="container mt-4">
-    {% include 'jefeVentas/informeVentas/hola.html' %}
+    {% include 'jefeVentas/informeVentas/informe_filtro.html' %}
 
     {% if filtro_aplicado %}
     <h1>Informe de Ventas</h1>
@@ -45,10 +45,8 @@
                         {% for documento in venta.documentotributario_set.all %}
                             <br>
                             {% if documento.tipo.nombre == "Factura" %}
-                                <!-- Botón para descargar el PDF de la factura -->
                                 <a href="{% url 'factura_pdf' documento.id %}" class="btn btn-primary">Descargar Factura</a>
                             {% elif documento.tipo.nombre == "Boleta" %}
-                                <!-- Botón para descargar el PDF de la boleta -->
                                 <a href="{% url 'boleta_pdf' documento.id %}" class="btn btn-primary">Descargar Boleta</a>
                             {% endif %}
                         {% endfor %}
