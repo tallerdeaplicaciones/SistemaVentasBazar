@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     // calcula el IVA y el total
-    iva = subtotal * 0.16; // tasa de IVA del 16%
+    iva = subtotal * 0.19; // tasa de IVA del 19%
     total = subtotal + iva;
     // actualiza el contenido de los elementos
     document.getElementById('subtotal').textContent = `Subtotal: $${subtotal.toFixed(2)}`;
-    document.getElementById('iva').textContent = `IVA (16%): $${iva.toFixed(2)}`;
+    document.getElementById('iva').textContent = `IVA (19%): $${iva.toFixed(2)}`;
     document.getElementById('total').textContent = `Total: $${total.toFixed(2)}`;
 });

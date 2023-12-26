@@ -62,6 +62,9 @@ class Pagina_informe_diario(PermissionRequiredMixin,ListView):
     template_name = "jefeVentas/informeVentas/informe_ventas.html"
     context_object_name = 'ventas'
     permission_required = "vendedor.permiso_jefeVentas"
+    def get_queryset(self):
+        
+        return DocumentoTributario.objects.all()
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -140,7 +143,7 @@ class CajaCreateView(PermissionRequiredMixin,CreateView):
     model= Caja
     form_class = CajaForm
     template_name='jefeventas/caja/actualizar_caja.html'
-    success_url = reverse_lazy('pagina_principal')
+    success_url = reverse_lazy('pagina_caja')
     permission_required = "vendedor.permiso_jefeVentas"
 
 

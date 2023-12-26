@@ -10,7 +10,7 @@
             <a class="btn btn-success me-2" href="{% url 'crear_caja' %}">
                 <i class="bi bi-plus-circle"></i> Agregar Caja
             </a>
-            <a class="btn btn-light me-2" href="{% url 'pagina_inventario' %}">
+            <a class="btn btn-light me-2" href="{% url 'pagina_caja' %}">
                 <i class="bi bi-arrow-repeat"></i> Actualizar
             </a>
         </div>
@@ -21,10 +21,12 @@
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Fecha creacion</th>
                     <th>Jefe ventas</th>
-                    <th>Estado</th>
+                    <th>Fecha creacion</th>
                     <th>Fecha termino</th>
+                    <th>Monto inicial</th>
+                    <th>Monto Final</th>
+                    <th>Estado</th>
                     <th>Opciones</th>
                 </tr>
             </thead>
@@ -32,10 +34,12 @@
                 {% for caja in cajas %}
                     <tr>
                         <td>{{ caja.id }}</td>
-                        <td>{{ caja.fecha_creacion }}</td>
                         <td>{{ caja.jefeVentas }}</td>
-                        <td>{{ caja.estado }}</td>
+                        <td>{{ caja.fecha_creacion }}</td>
                         <td>{{ caja.fecha_termino }}</td>
+                        <td>{{ caja.monto_inicial }}</td>
+                        <td>{{ caja.monto_final }}</td>
+                        <td>{{ caja.estado }}</td>
                         <td>
                             <div class="d-flex">
                                         <!--Control del estado de la caja-->
@@ -52,12 +56,6 @@
                                 
                                 <a class="btn btn-dark me-2" href="{% url 'pagina_caja_detail' caja.id %}">
                                     <i class="bi bi-search"></i> Detalles
-                                </a>
-                                <a class="btn btn-secondary me-2" href="#">
-                                    <i class="bi bi-pencil-square"></i> Editar
-                                </a>
-                                <a class="btn btn-light" href="#">
-                                    <i class="bi bi-trash"></i> Eliminar
                                 </a>
                             </div>
                         </td>

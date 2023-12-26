@@ -21,7 +21,8 @@
                 <p class="text-danger">Usuario y/o contraseñas incorrectos, intente nuevamente</p>
             {% endif %}
             <br><hr>
-            <input type="submit" class="btn btn-dark mt-2" value="Login">
+            <input type="submit" class="btn btn-secondary mt-2" value="Login">
+            <a href="{% url 'signup' %}" class="btn btn-primary">Registrarse</a>
             <a href="#" class="mt-2">¿Olvidaste tu contraseña?</a>
         </form>
     </div>
