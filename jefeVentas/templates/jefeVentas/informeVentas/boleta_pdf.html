@@ -65,7 +65,7 @@
             <img src="media/product_img/logo.jpg" alt="Logo" style="height: 150px; width: 200px;">
         </div>
         <div class="boleta-info">
-            <h2>BOLETA ELECTRÓNICA N° 708797912</h2>
+            <h2>BOLETA ELECTRÓNICA N° {{ documento.venta.id }}</h2>
             <p>R.U.T. 96.470.430-K</p>
         </div>
         <div class="company-info">
@@ -79,7 +79,7 @@
         <table class="details-table">
             <thead>
                 <tr>
-                    <th>SKU</th>
+                    <th>CATEGORIA</th>
                     <th>DESCRIPCIÓN</th>
                     <th>CANTIDAD</th>
                     <th>PRECIO UNIT.</th>
@@ -89,7 +89,7 @@
             <tbody>
                 {% for detalle in documento.detalleCompra.all %}
                 <tr>
-                    <td>{{ detalle.producto.sku }}</td>
+                    <td>{{ detalle.producto.categoria }}</td>
                     <td>{{ detalle.producto.nombre }}</td>
                     <td>{{ detalle.cantidad }}</td>
                     <td>{{ detalle.precio }}</td>
