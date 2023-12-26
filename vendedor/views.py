@@ -20,6 +20,27 @@ class VendedorView(PermissionRequiredMixin,View):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
+@method_decorator(login_required, name='dispatch')
+class VentasVendedorCajaView(View):
+    template_name = 'vendedor.html'
+
+    def get(self, request, *args, **kwargs):
+        # Obtén el vendedor actualmente logueado
+        vendedor = request.user.vendedor
+        
+        # Obtén la caja abierta
+        # caja_abierta = Caja.objects.last()
+
+        # Obtén todas las ventas asociadas al vendedor y a la caja
+        ventas_vendedor_caja = Venta.objects.filter(vendedor=vendedor)
+
+        # Pasa las ventas al contexto
+        context = {
+            'ventas_vendedor_caja': ventas_vendedor_caja,
+        }
+
+        return render(request, self.template_name, context)
+
 
 @method_decorator(login_required, name='dispatch')
 class GenerarVenta1(PermissionRequiredMixin,CreateView):
@@ -65,7 +86,7 @@ class RegistrarClienteView(CreateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'ventas/cliente_form.html'
-    success_url = 'vendedor/generar_ventas1'
+    success_url = reverse_lazy('ventas1')
     
     def form_valid(self, form):
         try:
@@ -76,6 +97,7 @@ class RegistrarClienteView(CreateView):
             messages.error(self.request, f'Error al crear el cliente: {e}', extra_tags='danger')
             return super().form_invalid(form)
         
+
 @method_decorator(login_required, name='dispatch')
 class GenerarVenta2(PermissionRequiredMixin, FormView):
     permission_required = "vendedor.permiso_vendedores"
@@ -217,3 +239,4 @@ class GenerarVenta3(PermissionRequiredMixin, View):
         except Http404 as e:
             messages.error(request, str(e), extra_tags='danger')
             return HttpResponseNotFound(str(e))
+

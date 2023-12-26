@@ -66,6 +66,13 @@
 }
 
 /* efectos dashboard */
+
+/* box dash */
+.box.card.active {
+    background-color: #ff0000;
+}
+
+
 /* cards */
 
 /* Agrega sombra al pasar el mouse */
