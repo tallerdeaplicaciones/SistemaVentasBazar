@@ -4,10 +4,11 @@ from vendedor.models import Producto, Caja, Categoria
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
-        fields = ['nombre','precio', 'descripcion', 'stock','imagen','categoria']
+        fields = ['nombre','precio','sku','descripcion', 'stock','imagen','categoria']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'precio': forms.TextInput(attrs={'class': 'form-control'}),
+            'sku': forms.TextInput(attrs={'class':'form-control'}),
             'descripcion' : forms.Textarea(attrs={'class' : 'form-control'}),
             'stock' : forms.TextInput(attrs={'class' : 'form-control'}),
             'imagen' : forms.ClearableFileInput(attrs={'class' : 'form-control'}),

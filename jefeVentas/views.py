@@ -3,13 +3,24 @@ from django.db.models.base import Model as Model
 from django.db.models.query import QuerySet
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView,DetailView,ListView,CreateView,UpdateView,DeleteView
-from vendedor.models import Producto, Caja, Estado, DocumentoTributario,Vendedor
+from vendedor.models import Producto, Caja, Estado, DocumentoTributario, TipoDocumentoTributario, Vendedor, Venta
 from .forms import ProductoForm, CajaForm, CajaUpdateForm
 from django.utils import timezone
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404
+from datetime import datetime
+from django.shortcuts import render
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.shortcuts import get_object_or_404
+from django.views import View
+
+
+
+
+
 
 
 # Create your views here.
@@ -26,6 +37,8 @@ class Pagina_principal(PermissionRequiredMixin,TemplateView):
         context['cajas'] = cajas
         context['caja_abierta'] = caja_abierta
         return context
+    
+    
 
 #Vista para el invetario.
 @method_decorator(login_required, name='dispatch')
@@ -46,13 +59,51 @@ class Pagina_caja(PermissionRequiredMixin,ListView):
 #Vista para los informes de ventas diarios.
 @method_decorator(login_required, name='dispatch')
 class Pagina_informe_diario(PermissionRequiredMixin,ListView):
-    model = DocumentoTributario
+    model = Venta
     template_name = "jefeVentas/informeVentas/informe_ventas.html"
     context_object_name = 'ventas'
     permission_required = "vendedor.permiso_jefeVentas"
     def get_queryset(self):
         
         return DocumentoTributario.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        vendedor_id = self.request.GET.get('vendedor')
+        tipo_documento_id = self.request.GET.get('tipo_documento')
+        fecha_inicio = self.request.GET.get('fecha_inicio')
+        fecha_fin = self.request.GET.get('fecha_fin')
+
+        if vendedor_id:
+            queryset = queryset.filter(vendedor_id=vendedor_id)
+
+        if tipo_documento_id:
+            queryset = queryset.filter(documentotributario__tipo_id=tipo_documento_id)
+
+        if fecha_inicio and fecha_fin:
+            fecha_inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+            fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d')
+            queryset = queryset.filter(fecha__range=(fecha_inicio, fecha_fin))
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['vendedores'] = Vendedor.objects.all()
+        context['tipos_documento'] = TipoDocumentoTributario.objects.all()
+
+        # Verifica si algún parámetro de filtro está presente
+        vendedor = self.request.GET.get('vendedor')
+        tipo_documento = self.request.GET.get('tipo_documento')
+        fecha_inicio = self.request.GET.get('fecha_inicio')
+        fecha_fin = self.request.GET.get('fecha_fin')
+
+        # Establecer 'filtro_aplicado' en True si alguno de los filtros no está vacío
+        context['filtro_aplicado'] = bool(vendedor or tipo_documento or fecha_inicio or fecha_fin)
+
+        return context
+    
+    
 
 @method_decorator(login_required, name='dispatch')
 class ProductoCreateView(PermissionRequiredMixin,CreateView):
@@ -145,3 +196,29 @@ class CajaUpdateView(PermissionRequiredMixin,UpdateView):
             caja.fecha_termino = None
         caja.save()
         return super().form_valid(form)
+
+class DocumentoPDFView(View):
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        documento = get_object_or_404(DocumentoTributario, pk=pk)
+
+        if self.request.resolver_match.url_name == 'factura_pdf':
+            template_path = 'jefeVentas/informeVentas/informe_ventas_pdf.html'
+        elif self.request.resolver_match.url_name == 'boleta_pdf':
+            template_path = 'jefeVentas/informeVentas/boleta_pdf.html'
+        else:
+            return HttpResponse('Acción no válida')
+
+        context = {'documento': documento}
+        return self.get_pdf_response(context, template_path, documento.id)
+
+    def get_pdf_response(self, context, template_path, documento_id):
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'filename="documento_tributario_{documento_id}.pdf"'
+        template = get_template(template_path)
+        html = template.render(context)
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+        return response
