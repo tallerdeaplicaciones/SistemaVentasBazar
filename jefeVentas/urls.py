@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import Pagina_principal,Pagina_inventario,Pagina_caja,Pagina_informe_diario
 from .views import CajaDetailView
-from .views import ProductoCreateView,ProductoDeleteView,ProductoUpdateView, ProductoDetailView,CajaCreateView,CajaUpdateView, informe_render_pdf_view, boleta_render_pdf_view
+from .views import ProductoCreateView,ProductoDeleteView,ProductoUpdateView, ProductoDetailView,CajaCreateView,CajaUpdateView, DocumentoPDFView
 
 
 
@@ -17,8 +17,9 @@ urlpatterns = [
     path('caja/', Pagina_caja.as_view(), name='pagina_caja'),
     path('caja/detail/<int:pk>/', CajaDetailView.as_view(), name='pagina_caja_detail'),
     path('informeDiario/',Pagina_informe_diario.as_view(), name='informe_diario'),
-    path('factura/pdf/<int:pk>/', informe_render_pdf_view, name='factura_pdf'),
-    path('boleta/pdf/<int:pk>/', boleta_render_pdf_view, name='boleta_pdf'),
+    path('factura/pdf/<int:pk>/', DocumentoPDFView.as_view(), name='factura_pdf'),
+    path('boleta/pdf/<int:pk>/', DocumentoPDFView.as_view(), name='boleta_pdf'),
+
     
 
 

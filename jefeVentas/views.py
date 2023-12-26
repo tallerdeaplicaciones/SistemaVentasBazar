@@ -15,6 +15,7 @@ from django.shortcuts import render
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.shortcuts import get_object_or_404
+from django.views import View
 
 
 
@@ -196,32 +197,28 @@ class CajaUpdateView(PermissionRequiredMixin,UpdateView):
         caja.save()
         return super().form_valid(form)
 
-def informe_render_pdf_view(request, pk):
-    documento = get_object_or_404(DocumentoTributario, pk=pk)
-    template_path = 'jefeVentas/informeVentas/informe_ventas_pdf.html'
-    context = {'documento': documento}
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="documento_tributario_{}.pdf"'.format(documento.id)
-    template = get_template(template_path)
-    html = template.render(context, request)
+class DocumentoPDFView(View):
 
-    pisa_status = pisa.CreatePDF(
-        html, dest=response)
-    if pisa_status.err:
-        return HttpResponse('We had some errors <pre>' + html + '</pre>')
-    return response
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        documento = get_object_or_404(DocumentoTributario, pk=pk)
 
-def boleta_render_pdf_view(request, pk):
-    documento = get_object_or_404(DocumentoTributario, pk=pk)
-    template_path = 'jefeVentas/informeVentas/boleta_pdf.html'
-    context = {'documento': documento}
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="documento_tributario_{}.pdf"'.format(documento.id)
-    template = get_template(template_path)
-    html = template.render(context, request)
+        if self.request.resolver_match.url_name == 'factura_pdf':
+            template_path = 'jefeVentas/informeVentas/informe_ventas_pdf.html'
+        elif self.request.resolver_match.url_name == 'boleta_pdf':
+            template_path = 'jefeVentas/informeVentas/boleta_pdf.html'
+        else:
+            return HttpResponse('Acción no válida')
 
-    pisa_status = pisa.CreatePDF(
-        html, dest=response)
-    if pisa_status.err:
-        return HttpResponse('We had some errors <pre>' + html + '</pre>')
-    return response
+        context = {'documento': documento}
+        return self.get_pdf_response(context, template_path, documento.id)
+
+    def get_pdf_response(self, context, template_path, documento_id):
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'filename="documento_tributario_{documento_id}.pdf"'
+        template = get_template(template_path)
+        html = template.render(context)
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+        return response
