@@ -34,18 +34,15 @@ def grupo_usuario(request):
         return redirect('vendedor')
     else:
         # Usuario no pertenece a ninguno de los grupos, manejar según tus necesidades
-        return render(request, 'registration/error_404.html')
+        return render(request, 'registration/nuevo_perfil.html')
     
 # incorporamos logout personalizado para 
 # volver a la vista de login cuando hacemos logout   
 class CustomLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
-        return redirect('login')
-
-
-
-# @permission_required("vendedor.permiso_jefeVentas")
+        return redirect('/')
+    
 class VendedorCreateView(CreateView):
     model = Vendedor
     form_class = VendedorForm
