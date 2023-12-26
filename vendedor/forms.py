@@ -6,18 +6,20 @@ from django.contrib.auth.models import Group, AbstractUser,User
 class VendedorForm(forms.ModelForm):
     class Meta:
         model = Vendedor
-        fields = ['name','last_name']
-        widgets = {
-            'name': forms.TextInput(attrs={'class':'form-control'}),
-            'last_name' : forms.TextInput(attrs={'class':'form-control'}),
-            # 'last_name': forms.TextInput(attrs={'class':'form-control'}),
-            # 'email' : forms.EmailInput(attrs={'class':'form-control'}),
-            # 'is_staff' : forms.CheckboxInput(attrs={'class':'form-check-input'}),
-            # 'is_active' : forms.CheckboxInput(attrs={'class':'form-check-input'}),
-            # 'date_joined' : forms.DateTimeInput(attrs={'class':'form-control'})
+        fields = ['user', 'name', 'last_name', 'run','fecha_nac', 'telefono', 'direccion', 'correo', 'turno']
+        widgets = {          
+            'user': forms.Select(attrs={'class': 'form-control', 'type': 'select'}), 
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'run': forms.TextInput(attrs={'class': 'form-control'}),
+            'fecha_nac': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control'}),
+            'correo': forms.EmailInput(attrs={'class': 'form-control'}),
+            'turno': forms.Select(attrs={'class': 'form-control'}), 
         }
 
-
+# recordar que este forms esta siendo usado para dar la opcion de agregar al cliente a una venta
 class VentasForm(forms.ModelForm):
     class Meta:
         model = Venta
@@ -26,6 +28,16 @@ class VentasForm(forms.ModelForm):
             'fecha': forms.DateInput(attrs={'class':'form-control'}),
             'cliente': forms.Select(attrs={'class':'form-control'}),
         }
+        
+# este form sera para mostrar las ventas asociadas a un vendedor
+
+# class VentaForm(forms.ModelForm):
+#     class Meta:
+#         model = Venta
+#         fields = ['cliente']
+#         widgets = {
+#             'fecha': forms.DateInput(attrs={'class': 'form-control'}),
+#         }
 
 
 # DetalleCompraFormSet = inlineformset_factory(

@@ -28,9 +28,14 @@
                 <h5 class="mb-0 mt-2 text-center"><i class="bi bi-check2-circle"></i> {% block encabezado %}{% endblock %} </h5>
             </div>
             <div class="col-md-6 text-end">
+                <i class="bi bi-person-bounding-box"></i>
                 {% if user.is_authenticated %}
-                    <span class="fw-bold me-3">{{ user.get_full_name }}</span>
-                    <!-- <a class="nav-link me-2" href="{% url 'profile' %}"><i class="bi bi-person"></i>Profile</a> -->
+                    {% if user.vendedor %}
+                        <span class="fw-bold me-3">{{ user.vendedor.name }}</span>
+                    {% else %}
+                        <!-- Si no hay perfil de Vendedor asociado, muestra el nombre de usuario o algo más -->
+                        <span class="fw-bold me-3">{{ user.username }}</span>
+                    {% endif %}
                     <a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i>Logout</a>
                 {% else %}
                     <a class="nav-link me-2" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i>Login</a>
