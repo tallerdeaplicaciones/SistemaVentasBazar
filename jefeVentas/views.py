@@ -50,6 +50,9 @@ class Pagina_informe_diario(PermissionRequiredMixin,ListView):
     template_name = "jefeVentas/informeVentas/informe_ventas.html"
     context_object_name = 'ventas'
     permission_required = "vendedor.permiso_jefeVentas"
+    def get_queryset(self):
+        
+        return DocumentoTributario.objects.all()
 
 @method_decorator(login_required, name='dispatch')
 class ProductoCreateView(PermissionRequiredMixin,CreateView):
