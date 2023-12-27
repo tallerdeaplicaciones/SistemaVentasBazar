@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, Http404
+from django.http import Http404, JsonResponse, HttpResponse
 from datetime import datetime
 from django.shortcuts import render
 from django.template.loader import get_template
@@ -107,12 +107,45 @@ class Pagina_informe_diario(PermissionRequiredMixin,ListView):
 
 @method_decorator(login_required, name='dispatch')
 class ProductoCreateView(PermissionRequiredMixin,CreateView):
+    
     model= Producto
     form_class =ProductoForm
     template_name='jefeventas/inventario/formulario.html'
     success_url = reverse_lazy('pagina_inventario')
     permission_required = "vendedor.permiso_jefeVentas"
 
+    def form_valid(self, form):
+        producto = form.save(commit=False)
+        producto.save()
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Si es una solicitud AJAX, prepara la respuesta JSON.
+            data = {
+                'status': 'success',
+                'message': 'El producto se ha creado con éxito.'
+            }
+            # Devuelve una respuesta JSON con el estado y el mensaje.
+            return JsonResponse(data)
+        else:
+            # Si no es una solicitud AJAX, sigue el flujo normal de redirección.
+            return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Este método se llama si el formulario enviado no es válido.
+        
+        # Comprueba si la petición es una solicitud AJAX.
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Si es una solicitud AJAX, prepara la respuesta JSON con los errores.
+            data = {
+                'status': 'error',
+                'message': 'El formulario contiene errores.',
+                'errors': form.errors.as_json()  # Convierte los errores del formulario a JSON.
+            }
+            # Devuelve una respuesta JSON con el estado de error y los mensajes correspondientes.
+            return JsonResponse(data, status=400)
+        else:
+            # Si no es una solicitud AJAX, sigue el flujo normal de mostrar el formulario con errores.
+            return super().form_invalid(form)
+        
 
 @method_decorator(login_required, name='dispatch')
 class ProductoUpdateView(PermissionRequiredMixin,UpdateView):
@@ -159,7 +192,36 @@ class CajaCreateView(PermissionRequiredMixin,CreateView):
         
         caja.estado = estado_abierto
         caja.save()
-        return super().form_valid(form)
+        
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Si es una solicitud AJAX, prepara la respuesta JSON.
+            data = {
+                'status': 'success',
+                'message': 'La caja se ha creado con éxito.'
+            }
+            # Devuelve una respuesta JSON con el estado y el mensaje.
+            return JsonResponse(data)
+        else:
+            # Si no es una solicitud AJAX, sigue el flujo normal de redirección.
+            return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Este método se llama si el formulario enviado no es válido.
+        
+        # Comprueba si la petición es una solicitud AJAX.
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Si es una solicitud AJAX, prepara la respuesta JSON con los errores.
+            data = {
+                'status': 'error',
+                'message': 'El formulario contiene errores.',
+                'errors': form.errors.as_json()  # Convierte los errores del formulario a JSON.
+            }
+            # Devuelve una respuesta JSON con el estado de error y los mensajes correspondientes.
+            return JsonResponse(data, status=400)
+        else:
+            # Si no es una solicitud AJAX, sigue el flujo normal de mostrar el formulario con errores.
+            return super().form_invalid(form)
+        
     
 @method_decorator(login_required, name='dispatch')
 class CajaDetailView(PermissionRequiredMixin,DetailView):
