@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import VendedorCreateView, SignUpView, CustomLogoutView, CustomLoginView
+from .views import VendedorCreateView, SignUpView
 
 
 urlpatterns = [

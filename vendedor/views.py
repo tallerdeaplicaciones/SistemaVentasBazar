@@ -13,15 +13,13 @@ from django.db.models import Sum
 from decimal import Decimal
 from django.contrib import messages
 
-
+# muestra la pagina principal de un vendedor requiere autenticacion
 @method_decorator(login_required, name='dispatch')
 class VendedorView(PermissionRequiredMixin, View):
-    template_name = 'vendedor/vendedor.html' 
-    permission_required = "vendedor.permiso_vendedores"
+    template_name = 'vendedor/vendedor.html' # aqui se renderizara
+    permission_required = "vendedor.permiso_vendedores" # para el permiso de vendedores
     
-    def get(self, request, *args, **kwargs):
-        # print(f"User: {request.user}")
-        # print(f"User has permiso_vendedores: {request.user.has_perm('permiso_vendedores')}")
+    def get(self, request, *args, **kwargs): # se ejecuta cuando se recibe solicitud get
         # obtener el vendedor actualmente logueado
         vendedor = request.user.vendedor
         # obtener todas las ventas asociadas al vendedor
